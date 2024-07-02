@@ -14,11 +14,20 @@ const Cell = ({ text, index, handleClick, selected }: CellProps) => {
       {selected && (
         <img
           src="/stamp.svg"
-          className="absolute inset-0 w-full h-full"
+          // className={`${
+          //   selected ? "visible" : "invisible"
+          // } absolute inset-0 w-full h-full shadow-sm`}
+          className="absolute inset-0 w-full h-full shadow-sm"
           alt="Bingo Stamp"
         />
       )}
-      <span className="font-bold lg:absolute lg:top-2 lg:left-2">{index}</span>
+      <span
+        className={`font-bold lg:absolute lg:top-2 lg:left-2 z-10 ${
+          selected ? "text-white" : "text-black"
+        }`}
+      >
+        {index}
+      </span>
       <span className="hidden lg:block">{text}</span>
     </div>
   );
