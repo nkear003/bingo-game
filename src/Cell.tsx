@@ -8,7 +8,7 @@ type CellProps = {
 const Cell = ({ text, index, handleClick, selected }: CellProps) => {
   return (
     <div
-      className="transition-colors border-2 border-black flex flex-col justify-center items-center aspect-square border-box relative lg:hover:bg-gray-500 lg:p-4"
+      className="transition-colors border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative lg:hover:bg-gray-500 lg:p-4 lg:border-2"
       onClick={() => handleClick(index)}
     >
       {selected && (
