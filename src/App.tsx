@@ -34,25 +34,25 @@ const freeWord = "FREE";
 
 const winningCombinations = [
   // Horizontal Rows
-  [0, 1, 2, 3, 4],
-  [5, 6, 7, 8, 9],
-  [10, 11, 12, 13, 14],
-  [15, 16, 17, 18, 19],
-  [20, 21, 22, 23, 24],
+  [1, 2, 3, 4, 5],
+  [6, 7, 8, 9, 10],
+  [11, 12, 13, 14, 15],
+  [16, 17, 18, 19, 20],
+  [21, 22, 23, 24, 25],
   // Vertical Columns
-  [0, 5, 10, 15, 20],
   [1, 6, 11, 16, 21],
   [2, 7, 12, 17, 22],
   [3, 8, 13, 18, 23],
   [4, 9, 14, 19, 24],
+  [5, 10, 15, 20, 25],
   // Diagonals
-  [0, 6, 12, 18, 24],
-  [4, 8, 12, 16, 20],
+  [1, 7, 13, 19, 25],
+  [5, 9, 13, 17, 21],
 ];
 
 function App() {
   const [board, setBoard] = useState<string[] | []>([]);
-  const [selected, setSelected] = useState<number[]>([12]);
+  const [selected, setSelected] = useState<number[]>([13]);
   const [bingo, setBingo] = useState(false);
 
   useEffect(() => {
@@ -78,32 +78,38 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className="flex justify-center min-h-svh bg-slate-500 p-4">
       <main>
-        <h1 className="text-xl">Bingo Game</h1>
-        {bingo && <h2 className="bingo">🎉 That's a bingo!!! 🎉</h2>}
-        <div className="board">
+        <h1 className="text-xl font-bold text-white mb-2">Bingo Game</h1>
+        <div className="grid grid-cols-5 grid-rows-5 bg-white border-2 border-black mb-4 w-[90vw]">
           {board.map((text, index) => (
             <Cell
               handleClick={handleCellClick}
-              key={index}
+              key={index + 1}
               text={text}
-              index={index}
-              selected={selected.includes(index)}
+              index={index + 1}
+              selected={selected.includes(index + 1)}
             />
           ))}
         </div>
-        <ol>
-          {board.map((text, index) => (
-            <li
-              key={`bottom-${index}`}
-              className={selected.includes(index) ? "selected" : ""}
-              onClick={() => handleCellClick(index)}
-            >
-              {text}
-            </li>
-          ))}
-        </ol>
+        {bingo && (
+          <h2 className="text-xl font-bold text-white">
+            🎉 That's a bingo!!! 🎉
+          </h2>
+        )}
+        {!bingo && (
+          <ol className="list-inside list-decimal text-white md:hidden">
+            {board.map((text, index) => (
+              <li
+                key={`bottom-${index}`}
+                className={selected.includes(index + 1) ? "line-through" : ""}
+                onClick={() => handleCellClick(index + 1)}
+              >
+                {text}
+              </li>
+            ))}
+          </ol>
+        )}
       </main>
     </div>
   );
