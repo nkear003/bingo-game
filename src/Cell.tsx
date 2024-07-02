@@ -8,7 +8,7 @@ type CellProps = {
 const Cell = ({ text, index, handleClick, selected }: CellProps) => {
   return (
     <div
-      className="transition-all border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500 lg:hover:text-white lg:border-2 cursor-pointer hover:scale-105 hover:z-10"
+      className="transition-all border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500 lg:hover:text-white lg:border-2 cursor-pointer lg:hover:scale-105 hover:z-10"
       onClick={() => handleClick(index)}
     >
       <img
