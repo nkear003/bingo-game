@@ -6,6 +6,7 @@ type CellProps = {
   children: any;
   winningTile: boolean;
   winningTileIndex: number;
+  animationRunning: boolean;
 };
 
 const Cell = ({
@@ -16,6 +17,7 @@ const Cell = ({
   children,
   winningTile,
   winningTileIndex,
+  animationRunning,
 }: CellProps) => {
   return (
     <div
@@ -31,7 +33,7 @@ const Cell = ({
         className={`${selected ? "opacity-100" : "opacity-0"} ${
           winningTile ? "spin " : ""
         } delay-${winningTile ? winningTileIndex : ""} ${
-          winningTile ? "will-change-transform" : ""
+          animationRunning ? "will-change-transform" : ""
         }
           
         absolute inset-0 w-full h-full transition-opacity transform-gpu`}

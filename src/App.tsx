@@ -55,12 +55,25 @@ function App() {
   const [selected, setSelected] = useState<number[]>([13]);
   const [bingo, setBingo] = useState(false);
   const [winningTiles, setWinningTiles] = useState<number[]>([]);
+  const [animationRunning, setAnimationRunning] = useState(false);
 
   useEffect(() => {
     const shufflePhrases = shuffleArray([...phrases]);
     shufflePhrases.splice(12, 0, freeWord);
     setBoard(shufflePhrases);
   }, []);
+
+  useEffect(() => {
+    if (bingo) {
+      setAnimationRunning(true);
+      const timer = setTimeout(() => {
+        setBingo(false);
+        setWinningTiles([]);
+        setAnimationRunning(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [bingo]);
 
   const checkBingo = (selected: number[]) => {
     for (const combination of winningCombinations) {
@@ -95,6 +108,7 @@ function App() {
               selected={selected.includes(index + 1)}
               winningTile={bingo && winningTiles.includes(index + 1)}
               winningTileIndex={winningTiles.indexOf(index + 1)}
+              animationRunning={animationRunning}
             >
               {bingo && winningTiles.includes(index + 1) && (
                 <div
