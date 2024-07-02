@@ -11,7 +11,6 @@ const Cell = ({ text, index, handleClick, selected }: CellProps) => {
       className={`transition-colors border-2 border-black flex flex-col justify-center items-center aspect-square border-box hover:bg-gray-500 md:relative ${
         selected ? "selected" : ""
       }`}
-      data-index={index}
       onClick={() => handleClick(index)}
     >
       <span>{index}</span>
