@@ -57,19 +57,14 @@ function App() {
 
   useEffect(() => {
     const shufflePhrases = shuffleArray([...phrases]);
-
-    // Insert the "free" tile/cell at 12
     shufflePhrases.splice(12, 0, freeWord);
-
     setBoard(shufflePhrases);
   }, []);
 
   const checkBingo = (selected: number[]) => {
     for (const combination of winningCombinations) {
       if (combination.every((index) => selected.includes(index))) {
-        console.log("winning combination", combination);
-        setBingo(true);
-        return;
+        return setBingo(true);
       }
     }
   };
