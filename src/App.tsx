@@ -81,7 +81,7 @@ function App() {
     <div className="flex justify-center min-h-svh bg-slate-500 p-4">
       <main>
         <h1 className="text-xl font-bold text-white mb-2">Bingo Game</h1>
-        <div className="grid grid-cols-5 grid-rows-5 bg-white border-2 border-black mb-4 md:w-[90vw]">
+        <div className="grid grid-cols-5 grid-rows-5 bg-white border-2 border-black mb-4 lg:w-[90vw]">
           {board.map((text, index) => (
             <Cell
               handleClick={handleCellClick}
@@ -98,7 +98,7 @@ function App() {
           </h2>
         )}
         {!bingo && (
-          <ol className="list-inside list-decimal text-white md:hidden">
+          <ol className="list-inside list-decimal text-white lg:hidden">
             {board.map((text, index) => (
               <li
                 key={`bottom-${index}`}
