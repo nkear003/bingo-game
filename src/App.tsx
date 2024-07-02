@@ -78,10 +78,10 @@ function App() {
   };
 
   return (
-    <div className="flex justify-center min-h-svh bg-slate-500">
-      <main className="max-w-5xl p-4">
+    <div className="bg-slate-500 min-h-svh flex justify-center p-4">
+      <main className="flex flex-col items-center w-full max-w-sm lg:max-w-5xl">
         <h1 className="text-xl font-bold text-white mb-2">Bingo Game</h1>
-        <div className="grid grid-cols-5 grid-rows-5 bg-white border-2 border-black mb-4 lg:w-full">
+        <div className="grid grid-cols-5 grid-rows-5 bg-white border-2 border-black mb-4 w-full">
           {board.map((text, index) => (
             <Cell
               handleClick={handleCellClick}
