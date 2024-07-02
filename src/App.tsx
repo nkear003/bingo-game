@@ -54,7 +54,6 @@ function App() {
   const [board, setBoard] = useState<string[] | []>([]);
   // TODO: it's confusing having multiple selected values
   const [selected, setSelected] = useState<number[]>([13]);
-  const [selectedInvisible, setSelectedInvisible] = useState<number[]>([13]);
   const [bingo, setBingo] = useState(false);
   const [winningTiles, setWinningTiles] = useState<number[]>([]);
   const [animationRunning, setAnimationRunning] = useState(false);
@@ -79,7 +78,6 @@ function App() {
 
         // Reset
         setWinningTiles([]);
-        setSelectedInvisible([13]);
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -106,12 +104,9 @@ function App() {
 
   const handleCellClick = (index: number) => {
     if (bingo) return; // No clicks during animation
-    if (selectedInvisible.includes(index)) return;
+    if (selected.includes(index)) return;
     const newSelected = [...selected, index];
-    const newSelectedInvisible = [...selectedInvisible, index];
     setSelected(newSelected);
-    // Set the invisible to include visible.. but same issue. So we need to remove the winning combos
-    setSelectedInvisible(newSelectedInvisible);
     checkBingo(newSelected);
   };
 
@@ -122,7 +117,6 @@ function App() {
           Bingo Count: {bingoCount}
         </p>
         <pre>selected: {selected.join(", ")}</pre>
-        <pre>selectedInvisible: {selectedInvisible.join(", ")}</pre>
         <pre>winningTiles: {winningTiles.join(", ")}</pre>
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board.map((text, index) => (
