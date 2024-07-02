@@ -83,12 +83,11 @@ function App() {
     }
   }, [bingo]);
 
-  // TODO This is messy, selected is unclear that it's different from the state value
-  const checkBingo = (selectedForCheck: number[]) => {
+  const checkBingo = (tilesToCheck: number[]) => {
     for (let i = 0; i < winningCombinations.length; i++) {
-      const combination = winningCombinations[i];
-      if (combination.every((index) => selectedForCheck.includes(index))) {
-        setWinningTiles(combination);
+      const winningCombination = winningCombinations[i];
+      if (winningCombination.every((index) => tilesToCheck.includes(index))) {
+        setWinningTiles(winningCombination);
         setBingoCount(bingoCount + 1);
 
         // Remove the winning combo so that it won't be matched again
