@@ -15,7 +15,7 @@ const Cell = ({ text, index, handleClick, selected }: CellProps) => {
         src="/stamp.svg"
         className={`${
           selected ? "opacity-100" : "opacity-0"
-        } absolute inset-0 w-full h-full shadow-sm transition-opacity`}
+        } absolute inset-0 w-full h-full transition-opacity`}
         alt="Bingo Stamp"
       />
 
