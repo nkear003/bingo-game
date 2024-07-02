@@ -8,22 +8,21 @@ type CellProps = {
 const Cell = ({ text, index, handleClick, selected }: CellProps) => {
   return (
     <div
-      className="transition-colors border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative lg:hover:bg-gray-500 lg:p-4 lg:border-2"
+      className="transition-all border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500 lg:hover:text-white lg:border-2 cursor-pointer hover:scale-105 hover:z-10"
       onClick={() => handleClick(index)}
     >
-      {selected && (
-        <img
-          src="/stamp.svg"
-          // className={`${
-          //   selected ? "visible" : "invisible"
-          // } absolute inset-0 w-full h-full shadow-sm`}
-          className="absolute inset-0 w-full h-full shadow-sm"
-          alt="Bingo Stamp"
-        />
-      )}
+      <img
+        src="/stamp.svg"
+        className={`${
+          selected ? "opacity-100" : "opacity-0"
+        } absolute inset-0 w-full h-full shadow-sm transition-opacity`}
+        // className="absolute inset-0 w-full h-full shadow-sm transition-opacity"
+        alt="Bingo Stamp"
+      />
+
       <span
         className={`font-bold lg:absolute lg:top-2 lg:left-2 z-10 ${
-          selected ? "text-white" : "text-black"
+          selected ? "text-white lg:text-black" : "text-black"
         }`}
       >
         {index}
