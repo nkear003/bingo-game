@@ -4,13 +4,19 @@
 
 :root {
   --selected: yellow;
+  --ff: Arial, sans-serif;
+  --text-size: 8px;
+  --line-height: 8px;
+  --text: 500 max(var(--text-size), 2vw) / max(var(--line-height), 2.5vw)
+    var(--ff);
+  --md: 800px;
 }
 
 .app {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background-color: tomato;
 }
 
@@ -28,17 +34,45 @@ h1 {
   border: 1.5px solid black;
 }
 
+ol {
+  padding-inline-start: 2rem;
+}
+
+@media (min-width: 800px) {
+  ol {
+    display: none;
+  }
+}
+
 .cell {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border: 1.5px solid #000;
-  font-size: 1rem;
+  /* font-size: 1rem; */
   cursor: pointer;
   box-sizing: border-box;
   padding: 1rem;
   position: relative;
+  aspect-ratio: 1/1;
+  max-width: 100%;
+}
+
+.cell > p {
+  display: none;
+}
+
+.bingo {
+  color: white;
+  /* transition: transform 2s;
+  transform: scale(2); */
+}
+
+@media (min-width: 800px) {
+  .cell > p {
+    display: block;
+  }
 }
 
 .cell-number {
@@ -48,7 +82,9 @@ h1 {
 }
 
 .cell.selected,
-.cell.selected:hover {
+.cell.selected:hover,
+li.selected,
+li.selected:hover {
   background-color: var(--selected);
 }
 

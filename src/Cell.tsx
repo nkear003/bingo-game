@@ -12,8 +12,10 @@ const Cell = ({ text, index, handleClick, selected }: CellProps) => {
       data-index={index}
       onClick={() => handleClick(index)}
     >
-      <span className="cell-number">{index}</span>
-      <span>{text}</span>
+      <p>
+        <span className="cell-number">{index}</span>
+        <span>{text}</span>
+      </p>
     </div>
   );
 };
