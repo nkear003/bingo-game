@@ -16,7 +16,6 @@ const Cell = ({ text, index, handleClick, selected }: CellProps) => {
         className={`${
           selected ? "opacity-100" : "opacity-0"
         } absolute inset-0 w-full h-full shadow-sm transition-opacity`}
-        // className="absolute inset-0 w-full h-full shadow-sm transition-opacity"
         alt="Bingo Stamp"
       />
 
