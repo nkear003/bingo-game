@@ -8,13 +8,13 @@ type CellProps = {
 const Cell = ({ text, index, handleClick, selected }: CellProps) => {
   return (
     <div
-      className={`transition-colors border-2 border-black flex flex-col justify-center items-center aspect-square border-box hover:bg-gray-500 md:relative ${
-        selected ? "selected" : ""
+      className={`transition-colors border-2 border-black flex flex-col justify-center items-center aspect-square border-box hover:bg-gray-500 md:relative p-4 ${
+        selected ? "bg-gray-500" : ""
       }`}
       onClick={() => handleClick(index)}
     >
-      <span>{index}</span>
-      <span className="hidden md:visible">{text}</span>
+      <span className="font-bold md:absolute md:top-2 md:left-2">{index}</span>
+      <span className="invisible md:visible">{text}</span>
     </div>
   );
 };
