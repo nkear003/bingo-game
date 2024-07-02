@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Cell from "./Cell";
+import { shuffleArray } from "./helpers";
 
-const initialBoard = [
+const phrases = [
   "(animal noises in the background)",
   "Is ____ on the call?",
   "We do have 5 minutes left",
@@ -15,7 +16,6 @@ const initialBoard = [
   "Sorry, something ___ with my calendar",
   "(child noises in the background)",
   "Could you share these slides afterwards?",
-  "FREE",
   "Sorry, I didn’t catch that",
   "You will send the minutes?",
   "I need to jump on another call",
@@ -29,6 +29,8 @@ const initialBoard = [
   "Next slide, please.",
   "Who just joined?",
 ];
+
+const freeWord = "FREE";
 
 const winningCombinations = [
   // Horizontal Rows
@@ -49,9 +51,18 @@ const winningCombinations = [
 ];
 
 function App() {
-  const [board] = useState(initialBoard);
+  const [board, setBoard] = useState<string[] | []>([]);
   const [selected, setSelected] = useState<number[]>([12]);
   const [bingo, setBingo] = useState(false);
+
+  useEffect(() => {
+    const shufflePhrases = shuffleArray([...phrases]);
+
+    // Insert the "free" tile/cell at 12
+    shufflePhrases.splice(12, 0, freeWord);
+
+    setBoard(shufflePhrases);
+  }, []);
 
   const checkBingo = (selected: number[]) => {
     for (const combination of winningCombinations) {
