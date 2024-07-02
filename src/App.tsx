@@ -54,6 +54,7 @@ function App() {
   const [board, setBoard] = useState<string[] | []>([]);
   const [selected, setSelected] = useState<number[]>([13]);
   const [bingo, setBingo] = useState(false);
+  const [winningTiles, setWinningTiles] = useState<number[]>([]);
 
   useEffect(() => {
     const shufflePhrases = shuffleArray([...phrases]);
@@ -64,6 +65,7 @@ function App() {
   const checkBingo = (selected: number[]) => {
     for (const combination of winningCombinations) {
       if (combination.every((index) => selected.includes(index))) {
+        setWinningTiles(combination);
         return setBingo(true);
       }
     }
@@ -80,7 +82,9 @@ function App() {
   return (
     <div className="bg-slate-500 min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
       <main className="flex flex-col items-center w-full max-w-sm lg:max-w-5xl">
-        <h1 className="text-xl font-bold text-white mb-2 lg:text-4xl lg:mb-6">Bingo Game</h1>
+        <h1 className="text-xl font-bold text-white mb-2 lg:text-4xl lg:mb-6">
+          Bingo Game
+        </h1>
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board.map((text, index) => (
             <Cell
@@ -89,27 +93,33 @@ function App() {
               text={text}
               index={index + 1}
               selected={selected.includes(index + 1)}
-            />
+              winningTile={bingo && winningTiles.includes(index + 1)}
+              winningTileIndex={winningTiles.indexOf(index + 1)}
+            >
+              {bingo && winningTiles.includes(index + 1) && (
+                <div
+                  className={`absolute text-white translate-x-1/2 translate-y-1/2 text-xl font-bold opacity-0 reveal delay-${winningTiles.indexOf(
+                    index + 1
+                  )}`}
+                >
+                  {"BINGO"[winningTiles.indexOf(index + 1)]}
+                </div>
+              )}
+            </Cell>
           ))}
         </div>
-        {bingo && (
-          <h2 className="text-xl font-bold text-white">
-            🎉 That's a bingo!!! 🎉
-          </h2>
-        )}
-        {!bingo && (
-          <ol className="list-inside list-decimal text-white lg:hidden">
-            {board.map((text, index) => (
-              <li
-                key={`bottom-${index}`}
-                className={selected.includes(index + 1) ? "line-through" : ""}
-                onClick={() => handleCellClick(index + 1)}
-              >
-                {text}
-              </li>
-            ))}
-          </ol>
-        )}
+
+        <ol className="list-inside list-decimal text-white cursor-pointer lg:hidden">
+          {board.map((text, index) => (
+            <li
+              key={`bottom-${index}`}
+              className={selected.includes(index + 1) ? "line-through" : ""}
+              onClick={() => handleCellClick(index + 1)}
+            >
+              {text}
+            </li>
+          ))}
+        </ol>
       </main>
     </div>
   );
