@@ -68,7 +68,7 @@ function App() {
     setBoard(shufflePhrases);
   }, []);
 
-  // TODO this could be run just when the bingo is one, no need to also watch for bingo, right?
+  // TODO this could be run just when the bingo is won, so no need to also watch for bingo, right?
   useEffect(() => {
     if (bingo) {
       setAnimationRunning(true);
