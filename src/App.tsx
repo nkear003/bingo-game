@@ -32,7 +32,7 @@ const phrases = [
 
 const freeWord = "FREE";
 
-const winningCombinations = [
+const initialWinningCombinations = [
   // Horizontal Rows
   [1, 2, 3, 4, 5],
   [6, 7, 8, 9, 10],
@@ -52,10 +52,16 @@ const winningCombinations = [
 
 function App() {
   const [board, setBoard] = useState<string[] | []>([]);
+  // TODO: it's confusing having multiple selected values
   const [selected, setSelected] = useState<number[]>([13]);
+  const [selectedInvisible, setSelectedInvisible] = useState<number[]>([13]);
   const [bingo, setBingo] = useState(false);
   const [winningTiles, setWinningTiles] = useState<number[]>([]);
   const [animationRunning, setAnimationRunning] = useState(false);
+  const [bingoCount, setBingoCount] = useState(0);
+  const [winningCombinations, setWinningCombinations] = useState(
+    initialWinningCombinations
+  );
 
   useEffect(() => {
     const shufflePhrases = shuffleArray([...phrases]);
@@ -63,41 +69,61 @@ function App() {
     setBoard(shufflePhrases);
   }, []);
 
+  // TODO this could be run just when the bingo is one, no need to also watch for bingo, right?
   useEffect(() => {
     if (bingo) {
       setAnimationRunning(true);
       const timer = setTimeout(() => {
-        setBingo(false);
-        setWinningTiles([]);
+        setBingo(false); // TODO This and set animation running could be one thing. We don't just have one bingo now
         setAnimationRunning(false);
+
+        // Reset
+        setWinningTiles([]);
+        setSelectedInvisible([13]);
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [bingo]);
 
-  const checkBingo = (selected: number[]) => {
-    for (const combination of winningCombinations) {
-      if (combination.every((index) => selected.includes(index))) {
+  // TODO This is messy, selected is unclear that it's different from the state value
+  const checkBingo = (selectedForCheck: number[]) => {
+    for (let i = 0; i < winningCombinations.length; i++) {
+      const combination = winningCombinations[i];
+      if (combination.every((index) => selectedForCheck.includes(index))) {
         setWinningTiles(combination);
+        setBingoCount(bingoCount + 1);
+
+        // Remove the winning combo so that it won't be matched again
+        setWinningCombinations([
+          ...winningCombinations.slice(0, i),
+          ...winningCombinations.slice(i + 1),
+        ]);
+
         return setBingo(true);
       }
     }
   };
 
   const handleCellClick = (index: number) => {
-    if (bingo) return; // only allow one bingo
-    if (selected.includes(index)) return;
+    if (bingo) return; // No clicks during animation
+    if (selectedInvisible.includes(index)) return;
     const newSelected = [...selected, index];
+    const newSelectedInvisible = [...selectedInvisible, index];
     setSelected(newSelected);
+    // Set the invisible to include visible.. but same issue. So we need to remove the winning combos
+    setSelectedInvisible(newSelectedInvisible);
     checkBingo(newSelected);
   };
 
   return (
     <div className="bg-slate-500 min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
       <main className="flex flex-col items-center w-full max-w-sm lg:max-w-5xl">
-        <h1 className="text-xl font-bold text-white mb-2 lg:text-4xl lg:mb-6">
-          Bingo Game
-        </h1>
+        <p className="text-xl font-bold text-white mb-2 lg:text-4xl lg:mb-6">
+          Bingo Count: {bingoCount}
+        </p>
+        <pre>selected: {selected.join(", ")}</pre>
+        <pre>selectedInvisible: {selectedInvisible.join(", ")}</pre>
+        <pre>winningTiles: {winningTiles.join(", ")}</pre>
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board.map((text, index) => (
             <Cell
