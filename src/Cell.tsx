@@ -14,10 +14,10 @@ const Cell = ({ text, index, handleClick, selected }: CellProps) => {
       {selected && (
         <img
           src="/stamp.svg"
-          className={`${
-            selected ? "visible" : "invisible"
-          } absolute inset-0 w-full h-full shadow-sm`}
-          // className="absolute inset-0 w-full h-full shadow-sm"
+          // className={`${
+          //   selected ? "visible" : "invisible"
+          // } absolute inset-0 w-full h-full shadow-sm`}
+          className="absolute inset-0 w-full h-full shadow-sm"
           alt="Bingo Stamp"
         />
       )}
