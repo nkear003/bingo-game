@@ -51,10 +51,3 @@ export const phrases = [
 ];
 
 export const freeWord = "FREE";
-
-export const animationConfig = {
-  base: 0.25,
-  tiles: 5,
-};
-
-export const animationTimingBingo = animationConfig.base * animationConfig.tiles;

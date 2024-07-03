@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Cell from "./Cell";
 import { shuffleArray } from "./helpers";
-import {
-  initialWinningCombinations,
-  freeWord,
-  animationTimingBingo,
-  phrases,
-} from "./config";
+import { initialWinningCombinations, freeWord, phrases } from "./config";
+
+export const animationConfig = {
+  base: 0.25,
+  delayTail: 0.25,
+  tiles: 5,
+};
+const animTimeBase = animationConfig.base * animationConfig.tiles;
 
 function App() {
   const [board, setBoard] = useState<string[] | []>();
