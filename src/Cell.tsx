@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 type CellProps = {
   text: string;
   index: number;
@@ -6,6 +8,7 @@ type CellProps = {
   winningTile: boolean;
   winningTileIndex: number;
   bingo: boolean;
+  bingos: number[][];
   animationRunning: boolean;
   bingoAnimationTiming: number | undefined;
 };
@@ -15,12 +18,26 @@ const Cell = ({
   index,
   handleClick,
   selected,
-  winningTile,
-  winningTileIndex,
+  // winningTile,
+  // winningTileIndex,
   bingo,
+  bingos,
   animationRunning,
   bingoAnimationTiming = 0.25,
 }: CellProps) => {
+  // If I recalculate on bingos, it will do it when bingos are cleared, still need to use the bingo
+  const winningTile = useMemo(() => {
+    return bingos.some((bingo) => bingo.includes(index));
+  }, [bingos, index]);
+
+  const winningTileIndex = useMemo(() => {
+    for (let i = 0; i < bingos.length; i++) {
+      const bingoIndex = bingos[i].indexOf(index);
+      if (bingoIndex !== -1) return bingoIndex;
+    }
+    return -1;
+  }, [bingos, index]);
+
   return (
     // TODO Using the winning tile class could be better
     <div

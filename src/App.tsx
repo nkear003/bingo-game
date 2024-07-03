@@ -31,26 +31,33 @@ const phrases = [
 ];
 const freeWord = "FREE";
 const initialWinningCombinations = [
-  // Horizontal Rows
+  // Horizontal rows
   [1, 2, 3, 4, 5],
   [6, 7, 8, 9, 10],
   [11, 12, 13, 14, 15],
   [16, 17, 18, 19, 20],
   [21, 22, 23, 24, 25],
-  // Vertical Columns
-  [1, 6, 11, 16, 21],
-  [2, 7, 12, 17, 22],
-  [3, 8, 13, 18, 23],
-  [4, 9, 14, 19, 24],
-  [5, 10, 15, 20, 25],
+  // Vertical columns
+  // We will use them reversed in case of multiple wins
+  // [1, 6, 11, 16, 21],
+  // [2, 7, 12, 17, 22],
+  // [3, 8, 13, 18, 23],
+  // [4, 9, 14, 19, 24],
+  // [5, 10, 15, 20, 25],
+  // Vertical columns reversed
+  [21, 16, 11, 6, 1],
+  [22, 17, 12, 7, 2],
+  [23, 18, 13, 8, 3],
+  [24, 19, 14, 9, 4],
+  [25, 20, 15, 10, 5],
   // Diagonals
   [1, 7, 13, 19, 25],
-  [5, 9, 13, 17, 21],
+  [21, 17, 13, 9, 5], // Reversed because it looks better
 ];
 const bingoAnimationTiming = 0.25;
 
 function App() {
-  const [board, setBoard] = useState<string[] | []>([]);
+  const [board, setBoard] = useState<string[] | []>();
   const [selected, setSelected] = useState<number[]>([13]);
   const [bingo, setBingo] = useState(false);
   const [winningTiles, setWinningTiles] = useState<number[]>([]);
@@ -59,6 +66,7 @@ function App() {
   const [winningCombinations, setWinningCombinations] = useState(
     initialWinningCombinations
   );
+  const [bingos, setBingos] = useState<number[][]>([]);
 
   useEffect(() => {
     const shufflePhrases = shuffleArray([...phrases]);
@@ -66,11 +74,9 @@ function App() {
     setBoard(shufflePhrases);
   }, []);
 
-  // TODO this could be run just when the bingo is won, so no need to also watch for bingo, right?
   useEffect(() => {
-    if (bingo) {
+    if (bingos.length > 0) {
       setAnimationRunning(true);
-
       // Stop animations
       const animationTimer = setTimeout(() => {
         setAnimationRunning(false);
@@ -79,6 +85,7 @@ function App() {
       // Reset the game
       const bingoTimer = setTimeout(() => {
         setBingo(false);
+        setBingos([]);
         setWinningTiles([]);
       }, bingoAnimationTiming * 7 * 1000); // 5 bingo tiles + a tail delay tail
 
@@ -87,24 +94,59 @@ function App() {
         clearTimeout(bingoTimer);
       };
     }
-  }, [bingo]);
+  }, [bingos]);
+
+  // TODO this could be run just when the bingo is won, so no need to also watch for bingo, right?
+  // useEffect(() => {
+  //   if (bingo) {
+  //     setAnimationRunning(true);
+
+  //     // Stop animations
+  //     const animationTimer = setTimeout(() => {
+  //       setAnimationRunning(false);
+  //     }, bingoAnimationTiming * 6 * 1000); // 5 bingo tiles, then fade letters
+
+  //     // Reset the game
+  //     const bingoTimer = setTimeout(() => {
+  //       setBingo(false);
+  //       setWinningTiles([]);
+  //     }, bingoAnimationTiming * 7 * 1000); // 5 bingo tiles + a tail delay tail
+
+  //     return () => {
+  //       clearTimeout(animationTimer);
+  //       clearTimeout(bingoTimer);
+  //     };
+  //   }
+  // }, [bingo]);
 
   const checkBingo = (tilesToCheck: number[]) => {
+    const newBingos: number[][] = [];
+
     for (let i = 0; i < winningCombinations.length; i++) {
       const winningCombination = winningCombinations[i];
+
       if (winningCombination.every((index) => tilesToCheck.includes(index))) {
-        setWinningTiles(winningCombination);
-        setBingoCount(bingoCount + 1);
+        // TODO Reactivate or cleanup
+        // setWinningTiles(winningCombination);
+        // setBingoCount(bingoCount + 1);
 
         // Remove the winning combo so that it won't be matched again
+        // TODO Reactivate, but first see if it's needed
         setWinningCombinations([
           ...winningCombinations.slice(0, i),
           ...winningCombinations.slice(i + 1),
         ]);
 
-        return setBingo(true);
+        // TODO Remove or cleanup
+        // return setBingo(true);
+
+        newBingos.push(winningCombination);
       }
     }
+
+    if (newBingos.length === 0) return;
+    setBingos([...bingos, ...newBingos]);
+    setBingoCount(bingoCount + newBingos.length);
   };
 
   const handleCellClick = (index: number) => {
@@ -122,33 +164,36 @@ function App() {
           Bingo Count: {bingoCount}
         </p>
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
-          {board.map((text, index) => (
-            // TODO Rename cell to tile
-            <Cell
-              handleClick={handleCellClick}
-              key={index + 1}
-              text={text}
-              index={index + 1}
-              selected={selected.includes(index + 1)}
-              winningTile={bingo && winningTiles.includes(index + 1)}
-              winningTileIndex={winningTiles.indexOf(index + 1)}
-              bingo={bingo}
-              animationRunning={animationRunning}
-              bingoAnimationTiming={bingoAnimationTiming}
-            />
-          ))}
+          {board &&
+            board.map((text, index) => (
+              // TODO Rename cell to tile
+              <Cell
+                handleClick={handleCellClick}
+                key={index}
+                text={text}
+                index={index + 1}
+                selected={selected.includes(index + 1)}
+                winningTile={bingo && winningTiles.includes(index + 1)}
+                winningTileIndex={winningTiles.indexOf(index + 1)}
+                bingo={bingo}
+                bingos={bingos}
+                animationRunning={animationRunning}
+                bingoAnimationTiming={bingoAnimationTiming}
+              />
+            ))}
         </div>
 
         <ol className="list-inside list-decimal text-white cursor-pointer lg:hidden">
-          {board.map((text, index) => (
-            <li
-              key={`bottom-${index}`}
-              className={selected.includes(index + 1) ? "line-through" : ""}
-              onClick={() => handleCellClick(index + 1)}
-            >
-              {text}
-            </li>
-          ))}
+          {board &&
+            board.map((text, index) => (
+              <li
+                key={`bottom-${index}`}
+                className={selected.includes(index + 1) ? "line-through" : ""}
+                onClick={() => handleCellClick(index + 1)}
+              >
+                {text}
+              </li>
+            ))}
         </ol>
       </main>
     </div>
