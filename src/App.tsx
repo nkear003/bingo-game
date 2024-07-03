@@ -29,9 +29,7 @@ const phrases = [
   "Next slide, please.",
   "Who just joined?",
 ];
-
 const freeWord = "FREE";
-
 const initialWinningCombinations = [
   // Horizontal Rows
   [1, 2, 3, 4, 5],
@@ -49,10 +47,10 @@ const initialWinningCombinations = [
   [1, 7, 13, 19, 25],
   [5, 9, 13, 17, 21],
 ];
+const bingoAnimationTiming = 0.25;
 
 function App() {
   const [board, setBoard] = useState<string[] | []>([]);
-  // TODO: it's confusing having multiple selected values
   const [selected, setSelected] = useState<number[]>([13]);
   const [bingo, setBingo] = useState(false);
   const [winningTiles, setWinningTiles] = useState<number[]>([]);
@@ -72,14 +70,22 @@ function App() {
   useEffect(() => {
     if (bingo) {
       setAnimationRunning(true);
-      const timer = setTimeout(() => {
-        setBingo(false); // TODO This and set animation running could be one thing. We don't just have one bingo now
-        setAnimationRunning(false);
 
-        // Reset
+      // Stop animations
+      const animationTimer = setTimeout(() => {
+        setAnimationRunning(false);
+      }, bingoAnimationTiming * 6 * 1000); // 5 bingo tiles, then fade letters
+
+      // Reset the game
+      const bingoTimer = setTimeout(() => {
+        setBingo(false);
         setWinningTiles([]);
-      }, 3000);
-      return () => clearTimeout(timer);
+      }, bingoAnimationTiming * 7 * 1000); // 5 bingo tiles + a tail delay tail
+
+      return () => {
+        clearTimeout(animationTimer);
+        clearTimeout(bingoTimer);
+      };
     }
   }, [bingo]);
 
@@ -115,10 +121,9 @@ function App() {
         <p className="text-xl font-bold text-white mb-2 lg:text-4xl lg:mb-6">
           Bingo Count: {bingoCount}
         </p>
-        <pre>selected: {selected.join(", ")}</pre>
-        <pre>winningTiles: {winningTiles.join(", ")}</pre>
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board.map((text, index) => (
+            // TODO Rename cell to tile
             <Cell
               handleClick={handleCellClick}
               key={index + 1}
@@ -127,18 +132,10 @@ function App() {
               selected={selected.includes(index + 1)}
               winningTile={bingo && winningTiles.includes(index + 1)}
               winningTileIndex={winningTiles.indexOf(index + 1)}
+              bingo={bingo}
               animationRunning={animationRunning}
-            >
-              {bingo && winningTiles.includes(index + 1) && (
-                <div
-                  className={`absolute text-white translate-x-1/2 translate-y-1/2 text-xl font-bold opacity-0 reveal delay-${winningTiles.indexOf(
-                    index + 1
-                  )}`}
-                >
-                  {"BINGO"[winningTiles.indexOf(index + 1)]}
-                </div>
-              )}
-            </Cell>
+              bingoAnimationTiming={bingoAnimationTiming}
+            />
           ))}
         </div>
 

@@ -3,10 +3,11 @@ type CellProps = {
   index: number;
   handleClick: any;
   selected: boolean;
-  children: any;
   winningTile: boolean;
   winningTileIndex: number;
+  bingo: boolean;
   animationRunning: boolean;
+  bingoAnimationTiming: number | undefined;
 };
 
 const Cell = ({
@@ -14,16 +15,18 @@ const Cell = ({
   index,
   handleClick,
   selected,
-  children,
   winningTile,
   winningTileIndex,
+  bingo,
   animationRunning,
+  bingoAnimationTiming = 0.25,
 }: CellProps) => {
   return (
+    // TODO Using the winning tile class could be better
     <div
       className={`transition-transform border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500  lg:hover:text-white lg:border-2 ${
         selected ? "" : "lg:hover:scale-105 hover:z-10"
-      } ${winningTile ? "" : "cursor-pointer"}
+      } ${selected ? "" : "cursor-pointer"}
         
       `}
       onClick={() => handleClick(index)}
@@ -33,23 +36,36 @@ const Cell = ({
         className={`${selected ? "opacity-100" : "opacity-0"} ${
           winningTile ? "spin " : ""
         } delay-${winningTile ? winningTileIndex : ""} ${
-          animationRunning ? "will-change-transform" : ""
-        }
-          
-        absolute inset-0 w-full h-full transition-opacity transform-gpu`}
+          bingo ? "will-change-transform" : ""
+        } absolute inset-0 w-full h-full transition-opacity transform-gpu`}
         alt="Bingo Stamp"
+        style={{
+          animationDelay: `${winningTileIndex * bingoAnimationTiming}s`,
+        }}
       />
 
       <span
-        className={`font-bold lg:absolute lg:top-2 lg:left-2 z-10 ${
+        className={`font-bold z-10 lg:absolute lg:top-2 lg:left-2 ${
           selected ? "text-white lg:text-black" : "text-black"
-        } ${winningTile ? "opacity-0" : ""}`}
+        } ${animationRunning && winningTile ? "opacity-0 lg:opacity-100" : ""}`}
       >
         {index}
       </span>
 
       {!selected && <span className="hidden lg:block">{text}</span>}
-      {children}
+
+      <div
+        className={`absolute text-white text-xl font-bold transition-[opacity,transform] ${
+          animationRunning ? "opacity-100 scale-100" : "opacity-0 scale-50"
+        }`}
+        style={{
+          transitionDelay: animationRunning
+            ? `${winningTileIndex * bingoAnimationTiming}s`
+            : "",
+        }}
+      >
+        {"BINGO"[winningTileIndex]}
+      </div>
     </div>
   );
 };

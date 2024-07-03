@@ -24,28 +24,12 @@
 }
 
 .reveal {
-  animation: reveal 0.5s ease-in-out forwards;
+  animation: reveal 0.25s ease-in-out forwards;
 }
 
-.opacity-reveal {
+/* .opacity-reveal {
   opacity: 1;
-}
-
-.delay-1 {
-  animation-delay: 0.5s !important;
-}
-
-.delay-2 {
-  animation-delay: 1s !important;
-}
-
-.delay-3 {
-  animation-delay: 1.5s !important;
-}
-
-.delay-4 {
-  animation-delay: 2s !important;
-}
+} */
 
 .spin {
   animation: spin 0.5s ease-in-out forwards;
