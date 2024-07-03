@@ -16,7 +16,9 @@ type CellProps = {
   bingo: boolean;
   bingos: number[][];
   animationRunning: boolean;
-  animationTimingBingoBase: number | undefined;
+  animTimeTotal: number;
+  animationTimingBase: number;
+  // animationTimingBingoSec: number;
 };
 
 const Cell = ({
@@ -29,7 +31,8 @@ const Cell = ({
   bingo,
   bingos,
   animationRunning,
-  animationTimingBingoBase = 0.25,
+  animTimeTotal,
+  animationTimingBase,
 }: CellProps) => {
   // TODO If I recalculate on bingos, it will do it when bingos are cleared, still need to use the bingo
   const winningTile = useMemo(() => {
@@ -88,7 +91,7 @@ const Cell = ({
         } absolute inset-0 w-full h-full transition-opacity transform-gpu`}
         alt="Bingo Stamp"
         style={{
-          animationDelay: `${winningTileIndex * animationTimingBingoBase}s`,
+          animationDelay: `${delayOffsetStep}s`,
         }}
       />
 
@@ -107,9 +110,7 @@ const Cell = ({
           animationRunning ? "opacity-100 scale-100" : "opacity-0 scale-50"
         }`}
         style={{
-          transitionDelay: animationRunning
-            ? `${winningTileIndex * animationTimingBingoBase}s`
-            : "",
+          transitionDelay: animationRunning ? `${delayOffsetStep}s` : "",
         }}
       >
         {"BINGO"[winningTileIndex]}

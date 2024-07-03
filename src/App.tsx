@@ -22,6 +22,7 @@ function App() {
     initialWinningCombinations
   );
   const [bingos, setBingos] = useState<number[][]>([]);
+  const [animTimeTotal, setAnimTimeTotal] = useState<number>(0);
 
   useEffect(() => {
     const shufflePhrases = shuffleArray([...phrases]);
@@ -31,18 +32,22 @@ function App() {
 
   useEffect(() => {
     if (bingos.length > 0) {
+      const newAnimTimeTotal = animTimeBase * bingos.length;
+      const animationTimingBingoTotalMs = newAnimTimeTotal * 1000;
+      setAnimTimeTotal(newAnimTimeTotal);
+
       setAnimationRunning(true);
       // Stop animations
       const animationTimer = setTimeout(() => {
         setAnimationRunning(false);
-      }, animationTimingBingoBase * 6 * 1000); // 5 bingo tiles, then fade letters
+      }, animationTimingBingoTotalMs);
 
-      // Reset after a win
+      // Give animations a moment to finish and reset
       const bingoTimer = setTimeout(() => {
         setBingo(false);
         setBingos([]);
         setWinningTiles([]);
-      }, animationTimingBingoBase * 7 * 1000); // 5 bingo tiles + a tail delay tail
+      }, animationTimingBingoTotalMs + 250);
 
       return () => {
         clearTimeout(animationTimer);
@@ -96,7 +101,9 @@ function App() {
                 bingo={bingo}
                 bingos={bingos}
                 animationRunning={animationRunning}
-                animationTimingBingoBase={animationTimingBingoBase}
+                animTimeTotal={animTimeTotal}
+                animationTimingBase={animationConfig.base}
+                // animationTimingBingoSec={animationTimingBingoSec}
               />
             ))}
         </div>
