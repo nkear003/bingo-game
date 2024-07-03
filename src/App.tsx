@@ -96,57 +96,34 @@ function App() {
     }
   }, [bingos]);
 
-  // TODO this could be run just when the bingo is won, so no need to also watch for bingo, right?
-  // useEffect(() => {
-  //   if (bingo) {
-  //     setAnimationRunning(true);
-
-  //     // Stop animations
-  //     const animationTimer = setTimeout(() => {
-  //       setAnimationRunning(false);
-  //     }, bingoAnimationTiming * 6 * 1000); // 5 bingo tiles, then fade letters
-
-  //     // Reset the game
-  //     const bingoTimer = setTimeout(() => {
-  //       setBingo(false);
-  //       setWinningTiles([]);
-  //     }, bingoAnimationTiming * 7 * 1000); // 5 bingo tiles + a tail delay tail
-
-  //     return () => {
-  //       clearTimeout(animationTimer);
-  //       clearTimeout(bingoTimer);
-  //     };
-  //   }
-  // }, [bingo]);
-
   const checkBingo = (tilesToCheck: number[]) => {
+    if (
+      !winningCombinations.some((winningCombination) =>
+        winningCombination.every((index) => tilesToCheck.includes(index))
+      )
+    )
+      return;
+
     const newBingos: number[][] = [];
+    let updatedWinningCombinations = winningCombinations.slice(); // Create a copy
 
-    for (let i = 0; i < winningCombinations.length; i++) {
-      const winningCombination = winningCombinations[i];
-
-      if (winningCombination.every((index) => tilesToCheck.includes(index))) {
-        // TODO Reactivate or cleanup
-        // setWinningTiles(winningCombination);
-        // setBingoCount(bingoCount + 1);
-
-        // Remove the winning combo so that it won't be matched again
-        // TODO Reactivate, but first see if it's needed
-        setWinningCombinations([
-          ...winningCombinations.slice(0, i),
-          ...winningCombinations.slice(i + 1),
-        ]);
-
-        // TODO Remove or cleanup
-        // return setBingo(true);
-
-        newBingos.push(winningCombination);
+    updatedWinningCombinations = updatedWinningCombinations.filter(
+      (winningCombination) => {
+        if (winningCombination.every((index) => tilesToCheck.includes(index))) {
+          newBingos.push(winningCombination);
+          return false; // Filter out this combination
+        }
+        return true; // Keep this combination
       }
-    }
+    );
 
-    if (newBingos.length === 0) return;
-    setBingos([...bingos, ...newBingos]);
-    setBingoCount(bingoCount + newBingos.length);
+    // Update state with modified winningCombinations
+    setWinningCombinations(updatedWinningCombinations);
+
+    if (newBingos.length > 0) {
+      setBingos([...bingos, ...newBingos]);
+      setBingoCount(bingoCount + newBingos.length);
+    }
   };
 
   const handleCellClick = (index: number) => {
