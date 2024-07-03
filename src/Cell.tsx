@@ -3,6 +3,7 @@ import {
   getIndexOfBingos,
   getTileIndexFromWinningBingoSet,
   calculateMultipleBingoAnimOffset,
+  calculateDelayTimingOffsetStep,
 } from "./functions";
 
 type CellProps = {
@@ -52,6 +53,21 @@ const Cell = ({
     () => calculateMultipleBingoAnimOffset(animTimeTotal, bingosIndex),
     [bingosIndex, animTimeTotal]
   );
+
+  const delayOffsetStep = useMemo(
+    () =>
+      calculateDelayTimingOffsetStep(
+        winningTileIndex,
+        animationTimingBase,
+        delayOffset
+      ),
+    [animationTimingBase, winningTileIndex, delayOffset]
+  );
+
+  // const delayOffsetTotal = useMemo(
+  //   () => delayOffsetStep + delayOffset,
+  //   [delayOffset, delayOffsetStep]
+  // );
 
   return (
     // TODO Using the winning tile class could be better
