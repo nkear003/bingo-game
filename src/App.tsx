@@ -54,7 +54,7 @@ const initialWinningCombinations = [
   [1, 7, 13, 19, 25],
   [21, 17, 13, 9, 5], // Reversed because it looks better
 ];
-const bingoAnimationTiming = 0.25;
+const animationTimingBingoBase = 0.25;
 
 function App() {
   const [board, setBoard] = useState<string[] | []>();
@@ -80,14 +80,14 @@ function App() {
       // Stop animations
       const animationTimer = setTimeout(() => {
         setAnimationRunning(false);
-      }, bingoAnimationTiming * 6 * 1000); // 5 bingo tiles, then fade letters
+      }, animationTimingBingoBase * 6 * 1000); // 5 bingo tiles, then fade letters
 
       // Reset after a win
       const bingoTimer = setTimeout(() => {
         setBingo(false);
         setBingos([]);
         setWinningTiles([]);
-      }, bingoAnimationTiming * 7 * 1000); // 5 bingo tiles + a tail delay tail
+      }, animationTimingBingoBase * 7 * 1000); // 5 bingo tiles + a tail delay tail
 
       return () => {
         clearTimeout(animationTimer);
@@ -141,7 +141,7 @@ function App() {
                 bingo={bingo}
                 bingos={bingos}
                 animationRunning={animationRunning}
-                bingoAnimationTiming={bingoAnimationTiming}
+                animationTimingBingoBase={animationTimingBingoBase}
               />
             ))}
         </div>
