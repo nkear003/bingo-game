@@ -82,7 +82,7 @@ function App() {
         setAnimationRunning(false);
       }, bingoAnimationTiming * 6 * 1000); // 5 bingo tiles, then fade letters
 
-      // Reset the game
+      // Reset after a win
       const bingoTimer = setTimeout(() => {
         setBingo(false);
         setBingos([]);
