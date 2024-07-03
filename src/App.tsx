@@ -97,32 +97,18 @@ function App() {
   }, [bingos]);
 
   const checkBingo = (tilesToCheck: number[]) => {
-    if (
-      !winningCombinations.some((winningCombination) =>
-        winningCombination.every((index) => tilesToCheck.includes(index))
-      )
-    )
-      return;
-
-    const newBingos: number[][] = [];
-    let updatedWinningCombinations = winningCombinations.slice(); // Create a copy
-
-    updatedWinningCombinations = updatedWinningCombinations.filter(
-      (winningCombination) => {
-        if (winningCombination.every((index) => tilesToCheck.includes(index))) {
-          newBingos.push(winningCombination);
-          return false; // Filter out this combination
-        }
-        return true; // Keep this combination
-      }
+    const newBingos = winningCombinations.filter((winningCombination) =>
+      winningCombination.every((index) => tilesToCheck.includes(index))
     );
 
-    // Update state with modified winningCombinations
-    setWinningCombinations(updatedWinningCombinations);
-
     if (newBingos.length > 0) {
-      setBingos([...bingos, ...newBingos]);
-      setBingoCount(bingoCount + newBingos.length);
+      const updatedWinningCombinations = winningCombinations.filter(
+        (winningCombination) => !newBingos.includes(winningCombination)
+      );
+
+      setWinningCombinations(updatedWinningCombinations);
+      setBingos((prevBingos) => [...prevBingos, ...newBingos]);
+      setBingoCount((prevCount) => prevCount + newBingos.length);
     }
   };
 
