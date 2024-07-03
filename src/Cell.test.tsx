@@ -2,6 +2,7 @@ import {
   getIndexOfBingos,
   getTileIndexFromWinningBingoSet,
   calculateMultipleBingoAnimOffset,
+  calculateDelayTimingOffsetStep,
 } from "./functions";
 
 const bingosTestData = [
@@ -10,7 +11,7 @@ const bingosTestData = [
   [10, 11, 12, 13, 14], // Bingo 3
 ];
 
-const animTimeTotal = 0.25 * 5; // 1.25
+const bingoAnimSingleSetTotalTime = 0.25 * 5; // 1.25
 
 describe("Basic functions test with index of 7", () => {
   let indexToTest = 7;
@@ -33,7 +34,7 @@ describe("Delay offset for different indexes", () => {
   test("index from first bingo set", () => {
     const bingosIndex = getIndexOfBingos(2, bingosTestData);
     const delayOffset = calculateMultipleBingoAnimOffset(
-      animTimeTotal,
+      bingoAnimSingleSetTotalTime,
       bingosIndex
     );
     // One animation (1.25) + number of previous that have to run (0)
@@ -43,7 +44,7 @@ describe("Delay offset for different indexes", () => {
   test("index from second bingo set", () => {
     const bingosIndex = getIndexOfBingos(7, bingosTestData);
     const delayOffset = calculateMultipleBingoAnimOffset(
-      animTimeTotal,
+      bingoAnimSingleSetTotalTime,
       bingosIndex
     );
     // One animation (1.25) + number of previous that have to run (1)
@@ -53,7 +54,7 @@ describe("Delay offset for different indexes", () => {
   test("index from third bingo set", () => {
     const bingosIndex = getIndexOfBingos(11, bingosTestData);
     const delayOffset = calculateMultipleBingoAnimOffset(
-      animTimeTotal,
+      bingoAnimSingleSetTotalTime,
       bingosIndex
     );
     // One animation (1.25) + number of previous that have to run (2)
@@ -68,7 +69,7 @@ describe("Each tile animation calculated correctly", () => {
       const bingoIndex = getIndexOfBingos(index, bingosTestData);
 
       const timingDelay = calculateMultipleBingoAnimOffset(
-        animTimeTotal,
+        bingoAnimSingleSetTotalTime,
         getIndexOfBingos(index, bingosTestData)
       );
 
@@ -77,7 +78,11 @@ describe("Each tile animation calculated correctly", () => {
         bingosTestData
       );
 
-      const timingDelayStep = winningTileIndex * animTimeTotal + timingDelay;
+      const timingDelayStep = calculateDelayTimingOffsetStep(
+        winningTileIndex,
+        bingoAnimSingleSetTotalTime,
+        timingDelay
+      );
 
       let result = {
         bingoIndex: bingoIndex,
