@@ -25,7 +25,7 @@ const Cell = ({
   animationRunning,
   bingoAnimationTiming = 0.25,
 }: CellProps) => {
-  // If I recalculate on bingos, it will do it when bingos are cleared, still need to use the bingo
+  // TODO If I recalculate on bingos, it will do it when bingos are cleared, still need to use the bingo
   const winningTile = useMemo(() => {
     return bingos.some((bingo) => bingo.includes(index));
   }, [bingos, index]);
