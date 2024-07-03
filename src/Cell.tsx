@@ -1,4 +1,9 @@
 import { useMemo } from "react";
+import {
+  getIndexOfBingos,
+  getTileIndexFromWinningBingoSet,
+  calculateMultipleBingoAnimOffset,
+} from "./functions";
 
 type CellProps = {
   text: string;
@@ -30,13 +35,23 @@ const Cell = ({
     return bingos.some((bingo) => bingo.includes(index));
   }, [bingos, index]);
 
-  const winningTileIndex = useMemo(() => {
-    for (let i = 0; i < bingos.length; i++) {
-      const bingoIndex = bingos[i].indexOf(index);
-      if (bingoIndex !== -1) return bingoIndex;
-    }
-    return -1;
-  }, [bingos, index]);
+  const winningTileIndex = useMemo(
+    () => getTileIndexFromWinningBingoSet(index, bingos),
+    [bingos, index]
+  );
+
+  // Where this animation is in list of "bingos"
+  const bingosIndex = useMemo(
+    () => getIndexOfBingos(index, bingos),
+    [bingos, index]
+  );
+
+  // Delay compensate, so that animations run sequentially
+  const delayOffset = useMemo(
+    // Total time it takes to run animation * where we are in queue
+    () => calculateMultipleBingoAnimOffset(animTimeTotal, bingosIndex),
+    [bingosIndex, animTimeTotal]
+  );
 
   return (
     // TODO Using the winning tile class could be better
