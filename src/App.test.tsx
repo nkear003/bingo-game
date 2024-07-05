@@ -34,7 +34,7 @@ describe("Basic functions test with index of 7", () => {
 /**
  * @deprecated We no longer need the delay offset
  */
-describe("Delay offset for different indexes", () => {
+/* describe("Delay offset for different indexes", () => {
   test("index from first bingo set", () => {
     const bingosIndex = getIndexOfBingos(2, bingosTestData);
     const delayOffset = calculateMultipleBingoAnimOffset(
@@ -64,9 +64,12 @@ describe("Delay offset for different indexes", () => {
     // One animation (1.25) + number of previous that have to run (2)
     expect(delayOffset).toEqual(3.25);
   });
-});
+}); */
 
-describe("Each tile animation calculated correctly", () => {
+/** 
+ * Old algorithm
+ */
+/* describe("Each tile animation calculated correctly", () => {
   let data: any[] = [];
   bingosTestData.forEach((bingo) => {
     bingo.forEach((index) => {
@@ -107,4 +110,5 @@ describe("Each tile animation calculated correctly", () => {
     console.log(arrayOfTimingDelaySteps);
     expect(arrayOfTimingDelaySteps).toEqual(staticSteppedArrayFifteenSteps);
   });
-});
+}); */
+
