@@ -80,7 +80,7 @@ describe("Bingo animation timing, 12 steps, starting from 0", () => {
   });
 }); */
 
-/** 
+/**
  * Old algorithm
  */
 /* describe("Each tile animation calculated correctly", () => {
@@ -125,4 +125,3 @@ describe("Bingo animation timing, 12 steps, starting from 0", () => {
     expect(arrayOfTimingDelaySteps).toEqual(staticSteppedArrayFifteenSteps);
   });
 }); */
-
