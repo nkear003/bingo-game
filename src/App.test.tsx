@@ -3,6 +3,7 @@ import {
   getTileIndexFromWinningBingoSet,
   calculateMultipleBingoAnimOffset,
   calculateDelayTimingOffsetStep,
+  generateDelayTiming,
 } from "./functions";
 import { animationConfig, delayAnimationBase } from "./config";
 
@@ -28,6 +29,19 @@ describe("Basic functions test with index of 7", () => {
       bingosTestData
     );
     expect(tileIndexFromWinningBingoSet).toEqual(2);
+  });
+});
+
+describe("Bingo animation timing, 12 steps, starting from 0", () => {
+  const delayIncrements = generateDelayTiming(12, 0.25, true);
+
+  test("delay increments are generated with correct length", () => {
+    expect(delayIncrements.length).toBe(12);
+  });
+  test("function generates increments correctly, when not starting with 0", () => {
+    expect(delayIncrements).toStrictEqual([
+      0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75,
+    ]);
   });
 });
 

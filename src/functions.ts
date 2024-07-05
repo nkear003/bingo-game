@@ -34,3 +34,12 @@ export const calculateDelayTimingOffsetStep = (
     (bingosIndex === 0 ? 0 : delayAnimationBase)
   );
 };
+
+export const generateDelayTiming = (
+  length: number,
+  increment: number,
+  startFromZero = false
+) =>
+  Array.from({ length }, (_, i) =>
+    startFromZero ? i * increment : (i + 1) * increment
+  );
