@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import Cell from "./Cell";
+import Tile from "./Tile";
 import { shuffleArray } from "./helpers";
 import { initialWinningCombinations, freeWord, phrases } from "./config";
 
@@ -72,7 +72,7 @@ function App() {
     }
   };
 
-  const handleCellClick = (index: number) => {
+  const handleTileClick = (index: number) => {
     if (bingo) return; // No clicks during animation
     if (selected.includes(index)) return;
     const newSelected = [...selected, index];
@@ -89,9 +89,9 @@ function App() {
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board &&
             board.map((text, index) => (
-              // TODO Rename cell to tile
-              <Cell
-                handleClick={handleCellClick}
+              // TODO Rename tile to tile
+              <Tile
+                handleClick={handleTileClick}
                 key={index}
                 text={text}
                 index={index + 1}
@@ -114,7 +114,7 @@ function App() {
               <li
                 key={`bottom-${index}`}
                 className={selected.includes(index + 1) ? "line-through" : ""}
-                onClick={() => handleCellClick(index + 1)}
+                onClick={() => handleTileClick(index + 1)}
               >
                 {text}
               </li>

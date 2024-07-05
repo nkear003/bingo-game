@@ -6,7 +6,7 @@ import {
   calculateDelayTimingOffsetStep,
 } from "./functions";
 
-type CellProps = {
+type TileProps = {
   text: string;
   index: number;
   handleClick: any;
@@ -21,7 +21,7 @@ type CellProps = {
   // animationTimingBingoSec: number;
 };
 
-const Cell = ({
+const Tile = ({
   text,
   index,
   handleClick,
@@ -33,7 +33,7 @@ const Cell = ({
   animationRunning,
   animTimeTotal,
   animationTimingBase,
-}: CellProps) => {
+}: TileProps) => {
   // TODO If I recalculate on bingos, it will do it when bingos are cleared, still need to use the bingo
   const winningTile = useMemo(() => {
     return bingos.some((bingo) => bingo.includes(index));
@@ -119,4 +119,4 @@ const Cell = ({
   );
 };
 
-export default Cell;
+export default Tile;
