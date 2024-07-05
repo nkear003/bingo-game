@@ -4,6 +4,7 @@ import {
   calculateMultipleBingoAnimOffset,
   calculateDelayTimingOffsetStep,
   generateDelayTiming,
+  concatArrays,
 } from "./functions";
 import { animationConfig, delayAnimationBase } from "./config";
 
@@ -32,15 +33,16 @@ describe("Basic functions test with index of 7", () => {
   });
 });
 
-describe("Bingo animation timing, 12 steps, starting from 0", () => {
-  const delayIncrements = generateDelayTiming(12, 0.25, true);
+describe("Bingo animation timing, 15 steps, starting from 0", () => {
+  const winningTiles = concatArrays(...bingosTestData);
+  const delayIncrements = generateDelayTiming(winningTiles.length, 0.25, true);
 
   test("delay increments are generated with correct length", () => {
-    expect(delayIncrements.length).toBe(12);
+    expect(delayIncrements.length).toBe(15);
   });
   test("function generates increments correctly, when not starting with 0", () => {
     expect(delayIncrements).toStrictEqual([
-      0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75,
+      0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5,
     ]);
   });
 });

@@ -43,3 +43,6 @@ export const generateDelayTiming = (
   Array.from({ length }, (_, i) =>
     startFromZero ? i * increment : (i + 1) * increment
   );
+
+export const concatArrays = <T>(...arrays: T[][]): T[] =>
+  arrays.reduce((acc, array) => acc.concat(array), []);
