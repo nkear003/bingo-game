@@ -4,6 +4,7 @@ import {
   calculateMultipleBingoAnimOffset,
   calculateDelayTimingOffsetStep,
 } from "./functions";
+import { animationConfig, delayAnimationBase } from "./config";
 
 const bingosTestData = [
   [0, 1, 2, 3, 4], // Bingo 1
@@ -11,7 +12,7 @@ const bingosTestData = [
   [10, 11, 12, 13, 14], // Bingo 3
 ];
 
-const bingoAnimSingleSetTotalTime = 0.25 * 5; // 1.25
+const bingoAnimSingleSetTotalTime = delayAnimationBase; // 0.25 * 5 = 1.25
 
 describe("Basic functions test with index of 7", () => {
   let indexToTest = 7;
@@ -30,6 +31,9 @@ describe("Basic functions test with index of 7", () => {
   });
 });
 
+/**
+ * @deprecated We no longer need the delay offset
+ */
 describe("Delay offset for different indexes", () => {
   test("index from first bingo set", () => {
     const bingosIndex = getIndexOfBingos(2, bingosTestData);
@@ -66,12 +70,12 @@ describe("Each tile animation calculated correctly", () => {
   let data: any[] = [];
   bingosTestData.forEach((bingo) => {
     bingo.forEach((index) => {
-      const bingoIndex = getIndexOfBingos(index, bingosTestData);
+      const bingosIndex = getIndexOfBingos(index, bingosTestData);
 
-      const timingDelay = calculateMultipleBingoAnimOffset(
-        bingoAnimSingleSetTotalTime,
-        getIndexOfBingos(index, bingosTestData)
-      );
+      // const timingDelay = calculateMultipleBingoAnimOffset(
+      //   bingoAnimSingleSetTotalTime,
+      //   getIndexOfBingos(index, bingosTestData)
+      // );
 
       const winningTileIndex = getTileIndexFromWinningBingoSet(
         index,
@@ -80,13 +84,13 @@ describe("Each tile animation calculated correctly", () => {
 
       const timingDelayStep = calculateDelayTimingOffsetStep(
         winningTileIndex,
-        bingoAnimSingleSetTotalTime,
-        timingDelay
+        animationConfig.base,
+        bingosIndex
       );
 
       let result = {
-        bingoIndex: bingoIndex,
-        timingDelay: timingDelay,
+        bingosIndex: bingosIndex,
+        // timingDelay: timingDelay,
         winningTileIndex: winningTileIndex,
         timingDelayStep: timingDelayStep,
       };
@@ -94,30 +98,13 @@ describe("Each tile animation calculated correctly", () => {
     });
   });
 
-  const arrayOfTimingDelayStepsExpectationStatic = [
-    0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5,
-    3.75,
+  const staticSteppedArrayFifteenSteps = [
+    0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5,
   ];
 
-  const createDynamicSteppedArray = (length = 15, step = 0.25) => {
-    return Array.from({ length: length }, (_, i) => (i + 1) * step);
-  };
-
-  const arrayOfTimingDelaySteps = data.map((item) => item.timingDelayStep);
-
-  test("make sure we have the right number of results", () => {
-    expect(arrayOfTimingDelaySteps.length).toBe(15);
-  });
-
-  test("make sure dynamic array renders right", () => {
-    expect(createDynamicSteppedArray(15, 0.25)).toEqual(
-      arrayOfTimingDelayStepsExpectationStatic
-    );
-  });
-
   test("with basic data", () => {
-    expect(arrayOfTimingDelaySteps).toEqual(
-      createDynamicSteppedArray(15, 0.25)
-    );
+    const arrayOfTimingDelaySteps = data.map((item) => item.timingDelayStep);
+    console.log(arrayOfTimingDelaySteps);
+    expect(arrayOfTimingDelaySteps).toEqual(staticSteppedArrayFifteenSteps);
   });
 });

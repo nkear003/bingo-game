@@ -51,20 +51,20 @@ const Cell = ({
   );
 
   // Delay compensate, so that animations run sequentially
-  const delayOffset = useMemo(
-    // Total time it takes to run animation * where we are in queue
-    () => calculateMultipleBingoAnimOffset(animTimeTotal, bingosIndex),
-    [bingosIndex, animTimeTotal]
-  );
+  // const delayOffset = useMemo(
+  //   // Total time it takes to run animation * where we are in queue
+  //   () => calculateMultipleBingoAnimOffset(animTimeTotal, bingosIndex),
+  //   [bingosIndex, animTimeTotal]
+  // );
 
   const delayOffsetStep = useMemo(
     () =>
       calculateDelayTimingOffsetStep(
         winningTileIndex,
         animationTimingBase,
-        delayOffset
+        bingosIndex
       ),
-    [animationTimingBase, winningTileIndex, delayOffset]
+    [animationTimingBase, winningTileIndex, bingosIndex]
   );
 
   // const delayOffsetTotal = useMemo(

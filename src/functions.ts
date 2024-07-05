@@ -25,6 +25,12 @@ export const calculateMultipleBingoAnimOffset = (
 
 export const calculateDelayTimingOffsetStep = (
   winningTileIndex: number,
-  bingoAnimSingleSetTotalTime: number,
-  delayOffset: number
-) => winningTileIndex * bingoAnimSingleSetTotalTime + delayOffset;
+  delayAnimationBase: number,
+  bingosIndex: number
+) => {
+  return (
+    winningTileIndex * delayAnimationBase +
+    bingosIndex +
+    (bingosIndex === 0 ? 0 : delayAnimationBase)
+  );
+};
