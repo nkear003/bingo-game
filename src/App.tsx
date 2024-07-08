@@ -34,24 +34,13 @@ function App() {
     initialWinningCombinations
   );
 
-  useEffect(() => {
-    if (isBingo) {
-      // Calculate total animation timing
-      const animationTotalDuration =
-        (winningTiles.length + 1) * animationConfig.animationTimingBaseInSec;
-      const animationTimingBingoTotalMs = animationTotalDuration * 1000;
-
-      // Timer for resetting after animation has run
-      const bingoTimer = setTimeout(() => {
-        setIsBingo(false);
-        setWinningTiles([]);
-      }, animationTimingBingoTotalMs);
-
-      return () => {
-        clearTimeout(bingoTimer);
-      };
-    }
-  }, [isBingo, winningTiles]);
+  const handleTileClick = (index: number) => {
+    // Don't allow clicks during animation or if we have already selected the tile
+    if (isBingo || selected.includes(index)) return;
+    const newSelected = [...selected, index];
+    setSelected(newSelected);
+    checkBingo(newSelected);
+  };
 
   const checkBingo = (tilesToCheck: number[]) => {
     // Check if any set of winning combos fully matches the currently selected tiles
@@ -77,13 +66,24 @@ function App() {
     }
   };
 
-  const handleTileClick = (index: number) => {
-    // Don't allow clicks during animation or if we have already selected the tile
-    if (isBingo || selected.includes(index)) return;
-    const newSelected = [...selected, index];
-    setSelected(newSelected);
-    checkBingo(newSelected);
-  };
+  useEffect(() => {
+    if (isBingo) {
+      // Calculate total animation timing
+      const animationTotalDuration =
+        (winningTiles.length + 1) * animationConfig.animationTimingBaseInSec;
+      const animationTimingBingoTotalMs = animationTotalDuration * 1000;
+
+      // Timer for resetting after animation has run
+      const bingoTimer = setTimeout(() => {
+        setIsBingo(false);
+        setWinningTiles([]);
+      }, animationTimingBingoTotalMs);
+
+      return () => {
+        clearTimeout(bingoTimer);
+      };
+    }
+  }, [isBingo, winningTiles]);
 
   return (
     <div className="bg-slate-500 min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
