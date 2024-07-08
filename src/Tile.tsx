@@ -3,9 +3,9 @@ type TileProps = {
   tileNumber: number;
   handleClick: (tileNumber: number) => void;
   selected: boolean;
-  animationDelay: number;
-  winningTile: boolean;
-  bingoLetterIndex: number;
+  animationDelay: number | undefined;
+  isWinningTile: boolean;
+  bingoLetterIndex: number | undefined;
 };
 
 const Tile = ({
@@ -14,13 +14,11 @@ const Tile = ({
   handleClick,
   selected,
   animationDelay,
-  winningTile,
+  isWinningTile,
   bingoLetterIndex,
 }: TileProps) => {
-  if (winningTile)
-    console.log(
-      `bingoLetterIndex: ${bingoLetterIndex}. Tile number: ${tileNumber}`
-    );
+  if (isWinningTile)
+    console.log(`$tileNumber: ${tileNumber} animationDelay: ${animationDelay}`);
 
   return (
     <div
@@ -35,9 +33,9 @@ const Tile = ({
       <img
         src="/stamp.svg"
         className={`${selected ? "opacity-100" : "opacity-0"} ${
-          winningTile ? "spin " : ""
+          isWinningTile ? "spin " : ""
         } ${
-          winningTile ? "will-change-transform" : ""
+          isWinningTile ? "will-change-transform" : ""
         } absolute inset-0 w-full h-full transition-opacity transform-gpu`}
         alt="Bingo Stamp"
         style={{
@@ -49,7 +47,7 @@ const Tile = ({
       <span
         className={`font-bold z-10 lg:absolute lg:top-2 lg:left-2 ${
           selected ? "text-white lg:text-black" : "text-black"
-        } ${winningTile ? "opacity-0 lg:opacity-100" : ""}`}
+        } ${isWinningTile ? "opacity-0 lg:opacity-100" : ""}`}
       >
         {tileNumber}
       </span>
@@ -61,14 +59,14 @@ const Tile = ({
       <div
         // className={`absolute text-white text-xl font-bold opacity-0 transition-[opacity,transform]`}
         className={`absolute text-white text-xl font-bold transition-[transform,opacity] opacity-0 ${
-          winningTile ? "reveal" : ""
+          isWinningTile ? "reveal" : ""
         }`}
         style={{
           animationDelay: `${animationDelay}s`,
         }}
         // onAnimationEnd={() => console.log(`animation for ${tileNumber} ended`)}
       >
-        {"BINGO"[bingoLetterIndex]}
+        {bingoLetterIndex && "BINGO"[bingoLetterIndex]}
       </div>
     </div>
   );

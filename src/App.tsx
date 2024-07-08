@@ -38,7 +38,7 @@ function App() {
     if (isBingo) {
       // Calculate total animation timing
       const animationTotalDuration =
-        winningTiles.length * animationConfig.animationTimingBaseInSec;
+        (winningTiles.length + 1) * animationConfig.animationTimingBaseInSec;
       const animationTimingBingoTotalMs = animationTotalDuration * 1000;
 
       // Timer for resetting after animation has run
@@ -91,34 +91,50 @@ function App() {
         </p>
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board &&
-            board.map((text, index) => (
-              <Tile
-                handleClick={handleTileClick}
-                key={index}
-                text={text}
-                tileNumber={index + 1}
-                selected={selected.includes(index + 1)}
-                winningTile={winningTiles.includes(index + 1)}
-                // TODO How could I optimize this to only check if we have won
-                bingoLetterIndex={
-                  bingoLetterIndexes[winningTiles.indexOf(index + 1)]
-                }
-                animationDelay={animationDelayIncrements.indexOf(index)}
-              />
-            ))}
+            board.map((text, index) => {
+              const tileNumber = index + 1;
+              const isWinningTile = winningTiles.includes(tileNumber);
+              return (
+                <Tile
+                  handleClick={handleTileClick}
+                  key={index}
+                  text={text}
+                  tileNumber={tileNumber}
+                  selected={selected.includes(tileNumber)}
+                  isWinningTile={isWinningTile}
+                  bingoLetterIndex={
+                    isWinningTile
+                      ? bingoLetterIndexes[winningTiles.indexOf(tileNumber)]
+                      : undefined
+                  }
+                  animationDelay={
+                    isWinningTile
+                      ? animationDelayIncrements[
+                          winningTiles.indexOf(tileNumber)
+                        ]
+                      : undefined
+                  }
+                />
+              );
+            })}
         </div>
 
         <ol className="list-inside list-decimal text-white cursor-pointer lg:hidden">
           {board &&
-            board.map((text, index) => (
-              <li
-                key={`bottom-${index}`}
-                className={selected.includes(index + 1) ? "line-through" : ""}
-                onClick={() => handleTileClick(index + 1)}
-              >
-                {text}
-              </li>
-            ))}
+            board.map((text, index) => {
+              const tileNumber = index + 1;
+              return (
+                <li
+                  key={`bottom-${index}`}
+                  className={
+                    selected.includes(tileNumber) ? "line-through" : ""
+                  }
+                  onClick={() => handleTileClick(tileNumber)}
+                >
+                  {text}
+                </li>
+              );
+            })}
         </ol>
       </main>
     </div>
