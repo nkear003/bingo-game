@@ -7,6 +7,14 @@ export const getIndexOfBingos = (index: number, bingos: number[][]) => {
   return -1;
 };
 
+export const generateIndexOfWinningTiles = (length = 75) => {
+  let result = [];
+  for (let i = 0; i < length; i++) {
+    result.push(i % 5);
+  }
+  return result;
+};
+
 export const getTileIndexFromWinningBingoSet = (
   index: number,
   bingos: number[][]
@@ -38,11 +46,8 @@ export const calculateDelayTimingOffsetStep = (
 export const generateDelayTiming = (
   length: number,
   increment: number,
-  startFromZero = false
+  startFromZero = true
 ) =>
   Array.from({ length }, (_, i) =>
     startFromZero ? i * increment : (i + 1) * increment
   );
-
-export const concatArrays = <T>(...arrays: T[][]): T[] =>
-  arrays.reduce((acc, array) => acc.concat(array), []);

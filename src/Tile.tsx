@@ -1,119 +1,74 @@
-import { useMemo } from "react";
-import {
-  getIndexOfBingos,
-  getTileIndexFromWinningBingoSet,
-  calculateMultipleBingoAnimOffset,
-  calculateDelayTimingOffsetStep,
-} from "./functions";
-
 type TileProps = {
   text: string;
-  index: number;
-  handleClick: any;
+  tileNumber: number;
+  handleClick: (tileNumber: number) => void;
   selected: boolean;
+  animationDelay: number;
   winningTile: boolean;
-  winningTileIndex: number;
-  bingo: boolean;
-  bingos: number[][];
-  animationRunning: boolean;
-  animTimeTotal: number;
-  animationTimingBase: number;
-  // animationTimingBingoSec: number;
+  bingoLetterIndex: number;
 };
 
 const Tile = ({
   text,
-  index,
+  tileNumber,
   handleClick,
   selected,
-  // winningTile,
-  // winningTileIndex,
-  bingo,
-  bingos,
-  animationRunning,
-  animTimeTotal,
-  animationTimingBase,
+  animationDelay,
+  winningTile,
+  bingoLetterIndex,
 }: TileProps) => {
-  // TODO If I recalculate on bingos, it will do it when bingos are cleared, still need to use the bingo
-  const winningTile = useMemo(() => {
-    return bingos.some((bingo) => bingo.includes(index));
-  }, [bingos, index]);
-
-  const winningTileIndex = useMemo(
-    () => getTileIndexFromWinningBingoSet(index, bingos),
-    [bingos, index]
-  );
-
-  // Where this animation is in list of "bingos"
-  const bingosIndex = useMemo(
-    () => getIndexOfBingos(index, bingos),
-    [bingos, index]
-  );
-
-  // Delay compensate, so that animations run sequentially
-  // const delayOffset = useMemo(
-  //   // Total time it takes to run animation * where we are in queue
-  //   () => calculateMultipleBingoAnimOffset(animTimeTotal, bingosIndex),
-  //   [bingosIndex, animTimeTotal]
-  // );
-
-  const delayOffsetStep = useMemo(
-    () =>
-      calculateDelayTimingOffsetStep(
-        winningTileIndex,
-        animationTimingBase,
-        bingosIndex
-      ),
-    [animationTimingBase, winningTileIndex, bingosIndex]
-  );
-
-  // const delayOffsetTotal = useMemo(
-  //   () => delayOffsetStep + delayOffset,
-  //   [delayOffset, delayOffsetStep]
-  // );
+  if (winningTile)
+    console.log(
+      `bingoLetterIndex: ${bingoLetterIndex}. Tile number: ${tileNumber}`
+    );
 
   return (
-    // TODO Using the winning tile class could be better
     <div
       className={`transition-transform border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500  lg:hover:text-white lg:border-2 ${
         selected ? "" : "lg:hover:scale-105 hover:z-10"
       } ${selected ? "" : "cursor-pointer"}
         
       `}
-      onClick={() => handleClick(index)}
+      onClick={() => handleClick(tileNumber)}
     >
+      {/* Stamp */}
       <img
         src="/stamp.svg"
         className={`${selected ? "opacity-100" : "opacity-0"} ${
           winningTile ? "spin " : ""
-        } delay-${winningTile ? winningTileIndex : ""} ${
-          bingo ? "will-change-transform" : ""
+        } ${
+          winningTile ? "will-change-transform" : ""
         } absolute inset-0 w-full h-full transition-opacity transform-gpu`}
         alt="Bingo Stamp"
         style={{
-          animationDelay: `${delayOffsetStep}s`,
+          animationDelay: `${animationDelay}s`,
         }}
       />
 
+      {/* Tile number */}
       <span
         className={`font-bold z-10 lg:absolute lg:top-2 lg:left-2 ${
           selected ? "text-white lg:text-black" : "text-black"
-        } ${animationRunning && winningTile ? "opacity-0 lg:opacity-100" : ""}`}
+        } ${winningTile ? "opacity-0 lg:opacity-100" : ""}`}
       >
-        {index}
+        {tileNumber}
       </span>
 
+      {/* Text */}
       {!selected && <span className="hidden lg:block">{text}</span>}
 
+      {/* Bingo letter */}
       <div
-        className={`absolute text-white text-xl font-bold transition-[opacity,transform] ${
-          animationRunning ? "opacity-100 scale-100" : "opacity-0 scale-50"
+        // className={`absolute text-white text-xl font-bold opacity-0 transition-[opacity,transform]`}
+        className={`absolute text-white text-xl font-bold transition-[transform,opacity] opacity-0 ${
+          winningTile ? "reveal" : ""
         }`}
         style={{
-          transitionDelay: animationRunning ? `${delayOffsetStep}s` : "",
+          animationDelay: `${animationDelay}s`,
         }}
+        // onAnimationEnd={() => console.log(`animation for ${tileNumber} ended`)}
       >
-        {"BINGO"[winningTileIndex]}
+        {"BINGO"[bingoLetterIndex]}
       </div>
     </div>
   );

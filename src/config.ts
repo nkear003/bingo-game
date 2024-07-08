@@ -6,18 +6,11 @@ export const initialWinningCombinations = [
   [16, 17, 18, 19, 20],
   [21, 22, 23, 24, 25],
   // Vertical columns
-  // We will use them reversed in case of multiple wins
-  // [1, 6, 11, 16, 21],
-  // [2, 7, 12, 17, 22],
-  // [3, 8, 13, 18, 23],
-  // [4, 9, 14, 19, 24],
-  // [5, 10, 15, 20, 25],
-  // Vertical columns reversed
-  [21, 16, 11, 6, 1],
-  [22, 17, 12, 7, 2],
-  [23, 18, 13, 8, 3],
-  [24, 19, 14, 9, 4],
-  [25, 20, 15, 10, 5],
+  [1, 6, 11, 16, 21],
+  [2, 7, 12, 17, 22],
+  [3, 8, 13, 18, 23],
+  [4, 9, 14, 19, 24],
+  [5, 10, 15, 20, 25],
   // Diagonals
   [1, 7, 13, 19, 25],
   [21, 17, 13, 9, 5], // Reversed because it looks better
@@ -49,11 +42,14 @@ export const phrases = [
   "Next slide, please.",
   "Who just joined?",
 ];
-
 export const freeWord = "FREE";
 
 export const animationConfig = {
-  base: 0.25,
-  tiles: 5,
+  animationTimingBaseInSec: 0.25,
 };
-export const delayAnimationBase = animationConfig.base * animationConfig.tiles;
+
+// export const indexOfWinningTiles = [
+//   0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0,
+//   1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1,
+//   2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4,
+// ];
