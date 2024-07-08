@@ -54,10 +54,12 @@ function App() {
   }, [isBingo, winningTiles]);
 
   const checkBingo = (tilesToCheck: number[]) => {
+    // Check if any set of winning combos fully matches the currently selected tiles
     const newBingos = winningCombinations.filter((winningCombination) =>
       winningCombination.every((index) => tilesToCheck.includes(index))
     );
 
+    // If we have any "bingos" or winning combinations selected...
     if (newBingos.length > 0) {
       // Update the available winning combos for future bingos
       const updatedWinningCombinations = winningCombinations.filter(
@@ -65,7 +67,7 @@ function App() {
       );
       setWinningCombinations(updatedWinningCombinations);
 
-      // Set the winning tiles as a flat index
+      // Create a flat index of all selected tiles which are a part of a winning set
       const bingosFlattened = newBingos.flat();
       setWinningTiles(bingosFlattened);
 
