@@ -1,110 +1,101 @@
-import {
-  getIndexOfBingos,
-  getTileIndexFromWinningBingoSet,
-  calculateMultipleBingoAnimOffset,
-  calculateDelayTimingOffsetStep,
-} from "./functions";
-import { animationConfig, delayAnimationBase } from "./config";
+import { fireEvent, render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Tile from "./Tile";
 
-const bingosTestData = [
-  [0, 1, 2, 3, 4], // Bingo 1
-  [5, 6, 7, 8, 9], // Bingo 2
-  [10, 11, 12, 13, 14], // Bingo 3
+import { generateIndexOfWinningTiles, generateDelayTiming } from "./functions";
+import { initialWinningCombinations } from "./config";
+
+const winningTileCombinations = [
+  initialWinningCombinations[0],
+  initialWinningCombinations[1],
+  initialWinningCombinations[2],
 ];
+const winningCombosFlattened = winningTileCombinations.flat();
+const bingoLetterIndexes = generateIndexOfWinningTiles();
 
-const bingoAnimSingleSetTotalTime = delayAnimationBase; // 0.25 * 5 = 1.25
+describe("Bingo animation timing, 15 steps, starting from 0", () => {
+  const delayIncrements = generateDelayTiming(
+    winningCombosFlattened.length,
+    0.25,
+    true
+  );
 
-describe("Basic functions test with index of 7", () => {
-  let indexToTest = 7;
-
-  test("bingosIndex", () => {
-    const bingosIndex = getIndexOfBingos(indexToTest, bingosTestData);
-    expect(bingosIndex).toEqual(1);
+  test("delay increments are generated with correct length", () => {
+    expect(delayIncrements.length).toBe(15);
   });
 
-  test("getTileIndexFromWinningBingoSet", () => {
-    const tileIndexFromWinningBingoSet = getTileIndexFromWinningBingoSet(
-      indexToTest,
-      bingosTestData
-    );
-    expect(tileIndexFromWinningBingoSet).toEqual(2);
-  });
-});
-
-/**
- * @deprecated We no longer need the delay offset
- */
-describe("Delay offset for different indexes", () => {
-  test("index from first bingo set", () => {
-    const bingosIndex = getIndexOfBingos(2, bingosTestData);
-    const delayOffset = calculateMultipleBingoAnimOffset(
-      bingoAnimSingleSetTotalTime,
-      bingosIndex
-    );
-    // One animation (1.25) + number of previous that have to run (0)
-    expect(delayOffset).toEqual(1.25);
-  });
-
-  test("index from second bingo set", () => {
-    const bingosIndex = getIndexOfBingos(7, bingosTestData);
-    const delayOffset = calculateMultipleBingoAnimOffset(
-      bingoAnimSingleSetTotalTime,
-      bingosIndex
-    );
-    // One animation (1.25) + number of previous that have to run (1)
-    expect(delayOffset).toEqual(2.25);
-  });
-
-  test("index from third bingo set", () => {
-    const bingosIndex = getIndexOfBingos(11, bingosTestData);
-    const delayOffset = calculateMultipleBingoAnimOffset(
-      bingoAnimSingleSetTotalTime,
-      bingosIndex
-    );
-    // One animation (1.25) + number of previous that have to run (2)
-    expect(delayOffset).toEqual(3.25);
+  test("function generates increments correctly, when not starting with 0", () => {
+    expect(delayIncrements).toStrictEqual([
+      0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5,
+    ]);
   });
 });
 
-describe("Each tile animation calculated correctly", () => {
-  let data: any[] = [];
-  bingosTestData.forEach((bingo) => {
-    bingo.forEach((index) => {
-      const bingosIndex = getIndexOfBingos(index, bingosTestData);
-
-      // const timingDelay = calculateMultipleBingoAnimOffset(
-      //   bingoAnimSingleSetTotalTime,
-      //   getIndexOfBingos(index, bingosTestData)
-      // );
-
-      const winningTileIndex = getTileIndexFromWinningBingoSet(
-        index,
-        bingosTestData
-      );
-
-      const timingDelayStep = calculateDelayTimingOffsetStep(
-        winningTileIndex,
-        animationConfig.base,
-        bingosIndex
-      );
-
-      let result = {
-        bingosIndex: bingosIndex,
-        // timingDelay: timingDelay,
-        winningTileIndex: winningTileIndex,
-        timingDelayStep: timingDelayStep,
-      };
-      data.push(result);
-    });
+describe("Bingo letter is selected correctly", () => {
+  test("index of 3", () => {
+    const bingoLetterIndex =
+      bingoLetterIndexes[winningCombosFlattened.indexOf(3)];
+    expect(bingoLetterIndex).toEqual(2);
   });
 
-  const staticSteppedArrayFifteenSteps = [
-    0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5,
-  ];
+  test("index of 7", () => {
+    const bingoLetterIndex =
+      bingoLetterIndexes[winningCombosFlattened.indexOf(7)];
+    expect(bingoLetterIndex).toEqual(1);
+  });
 
-  test("with basic data", () => {
-    const arrayOfTimingDelaySteps = data.map((item) => item.timingDelayStep);
-    console.log(arrayOfTimingDelaySteps);
-    expect(arrayOfTimingDelaySteps).toEqual(staticSteppedArrayFifteenSteps);
+  test("index of 14", () => {
+    const bingoLetterIndex =
+      bingoLetterIndexes[winningCombosFlattened.indexOf(14)];
+    expect(bingoLetterIndex).toEqual(3);
+  });
+});
+
+describe("Tile Component", () => {
+  const defaultProps = {
+    text: "Test Phrase",
+    tileNumber: 1,
+    handleClick: jest.fn(),
+    selected: false,
+    animationDelay: undefined,
+    isWinningTile: false,
+    bingoLetterIndex: undefined,
+  };
+
+  it("renders the Tile component with correct props when not selected", () => {
+    render(<Tile {...defaultProps} />);
+    expect(screen.getByText("Test Phrase")).toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.queryByText("B")).not.toBeInTheDocument(); // Check that BINGO letter is not present
+  });
+
+  it("renders the Tile component with correct props when selected", () => {
+    render(<Tile {...defaultProps} selected />);
+    expect(screen.queryByText("Test Phrase")).not.toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.queryByText("B")).not.toBeInTheDocument(); // Check that BINGO letter is not present
+  });
+
+  it("renders the Tile component with correct props when selected and is a winning tile", () => {
+    const winningProps = {
+      ...defaultProps,
+      selected: true,
+      isWinningTile: true,
+      animationDelay: 1,
+      bingoLetterIndex: 0, // Assuming 'B' is the first letter
+    };
+    render(<Tile {...winningProps} />);
+    expect(screen.queryByText("Test Phrase")).not.toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("B")).toBeInTheDocument(); // Check that BINGO letter is present
+  });
+
+  it("handles click events correctly", () => {
+    const handleClick = jest.fn();
+    render(<Tile {...defaultProps} handleClick={handleClick} />);
+
+    fireEvent.click(screen.getByText("1"));
+
+    expect(handleClick).toHaveBeenCalledWith(1);
   });
 });

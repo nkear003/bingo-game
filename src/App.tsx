@@ -2,83 +2,88 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Tile from "./Tile";
 import { shuffleArray } from "./helpers";
-import { initialWinningCombinations, freeWord, phrases } from "./config";
+import {
+  initialWinningCombinations,
+  freeWord,
+  phrases,
+  animationConfig,
+} from "./config";
+import { generateDelayTiming, generateIndexOfWinningTiles } from "./functions";
 
-export const animationConfig = {
-  base: 0.25,
-  delayTail: 0.25,
-  tiles: 5,
-};
-const animTimeBase = animationConfig.base * animationConfig.tiles;
+// GAME SETUP
+// Setup delay increments
+const animationDelayIncrements = generateDelayTiming(
+  phrases.length + 1, // One word is the free word
+  animationConfig.animationTimingBaseInSec,
+  true
+);
+// Setup phrases randomly on board
+const shufflePhrases = shuffleArray([...phrases]);
+// Add the free tile to the set
+shufflePhrases.splice(12, 0, freeWord);
+// Setup the board
+const board = shufflePhrases;
+const bingoLetterIndexes = generateIndexOfWinningTiles();
 
 function App() {
-  const [board, setBoard] = useState<string[] | []>();
   const [selected, setSelected] = useState<number[]>([13]);
-  const [bingo, setBingo] = useState(false);
+  const [isBingo, setIsBingo] = useState(false);
   const [winningTiles, setWinningTiles] = useState<number[]>([]);
-  const [animationRunning, setAnimationRunning] = useState(false);
   const [bingoCount, setBingoCount] = useState(0);
   const [winningCombinations, setWinningCombinations] = useState(
     initialWinningCombinations
   );
-  const [bingos, setBingos] = useState<number[][]>([]);
-  const [animTimeTotal, setAnimTimeTotal] = useState<number>(0);
-
-  useEffect(() => {
-    const shufflePhrases = shuffleArray([...phrases]);
-    shufflePhrases.splice(12, 0, freeWord);
-    setBoard(shufflePhrases);
-  }, []);
-
-  useEffect(() => {
-    if (bingos.length > 0) {
-      const newAnimTimeTotal = animTimeBase * bingos.length;
-      const animationTimingBingoTotalMs = newAnimTimeTotal * 1000;
-      setAnimTimeTotal(newAnimTimeTotal);
-
-      setAnimationRunning(true);
-      // Stop animations
-      const animationTimer = setTimeout(() => {
-        setAnimationRunning(false);
-      }, animationTimingBingoTotalMs);
-
-      // Give animations a moment to finish and reset
-      const bingoTimer = setTimeout(() => {
-        setBingo(false);
-        setBingos([]);
-        setWinningTiles([]);
-      }, animationTimingBingoTotalMs + 250);
-
-      return () => {
-        clearTimeout(animationTimer);
-        clearTimeout(bingoTimer);
-      };
-    }
-  }, [bingos]);
-
-  const checkBingo = (tilesToCheck: number[]) => {
-    const newBingos = winningCombinations.filter((winningCombination) =>
-      winningCombination.every((index) => tilesToCheck.includes(index))
-    );
-
-    if (newBingos.length > 0) {
-      const updatedWinningCombinations = winningCombinations.filter(
-        (winningCombination) => !newBingos.includes(winningCombination)
-      );
-
-      setWinningCombinations(updatedWinningCombinations);
-      setBingos((prevBingos) => [...prevBingos, ...newBingos]);
-      setBingoCount((prevCount) => prevCount + newBingos.length);
-    }
-  };
 
   const handleTileClick = (index: number) => {
-    if (bingo) return; // No clicks during animation
-    if (selected.includes(index)) return;
+    // Don't allow clicks during animation or if we have already selected the tile
+    if (isBingo || selected.includes(index)) return;
     const newSelected = [...selected, index];
     setSelected(newSelected);
     checkBingo(newSelected);
   };
+
+  const checkBingo = (tilesToCheck: number[]) => {
+    // Check if any set of winning combos fully matches the currently selected tiles
+    const newBingos = winningCombinations.filter((winningCombination) =>
+      winningCombination.every((index) => tilesToCheck.includes(index))
+    );
+
+    // If we have any "bingos" or winning combinations selected...
+    if (newBingos.length > 0) {
+      // Update the available winning combos for future bingos
+      const updatedWinningCombinations = winningCombinations.filter(
+        (winningCombination) => !newBingos.includes(winningCombination)
+      );
+      setWinningCombinations(updatedWinningCombinations);
+
+      // Create a flat index of all selected tiles which are a part of a winning set
+      const bingosFlattened = newBingos.flat();
+      setWinningTiles(bingosFlattened);
+
+      // Update bingo count and set bingo/winning state
+      setBingoCount((prevCount) => prevCount + newBingos.length);
+      setIsBingo(true);
+    }
+  };
+
+  useEffect(() => {
+    if (isBingo) {
+      // Calculate total animation timing
+      const animationTotalDuration =
+        (winningTiles.length + 1) * animationConfig.animationTimingBaseInSec;
+      const animationTimingBingoTotalMs = animationTotalDuration * 1000;
+
+      // Timer for resetting after animation has run
+      const bingoTimer = setTimeout(() => {
+        setIsBingo(false);
+        setWinningTiles([]);
+      }, animationTimingBingoTotalMs);
+
+      return () => {
+        clearTimeout(bingoTimer);
+      };
+    }
+  }, [isBingo, winningTiles]);
 
   return (
     <div className="bg-slate-500 min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
@@ -88,37 +93,50 @@ function App() {
         </p>
         <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board &&
-            board.map((text, index) => (
-              // TODO Rename tile to tile
-              <Tile
-                handleClick={handleTileClick}
-                key={index}
-                text={text}
-                index={index + 1}
-                selected={selected.includes(index + 1)}
-                winningTile={bingo && winningTiles.includes(index + 1)}
-                winningTileIndex={winningTiles.indexOf(index + 1)}
-                bingo={bingo}
-                bingos={bingos}
-                animationRunning={animationRunning}
-                animTimeTotal={animTimeTotal}
-                animationTimingBase={animationConfig.base}
-                // animationTimingBingoSec={animationTimingBingoSec}
-              />
-            ))}
+            board.map((text, index) => {
+              const tileNumber = index + 1;
+              const isWinningTile = winningTiles.includes(tileNumber);
+              return (
+                <Tile
+                  handleClick={handleTileClick}
+                  key={index}
+                  text={text}
+                  tileNumber={tileNumber}
+                  selected={selected.includes(tileNumber)}
+                  isWinningTile={isWinningTile}
+                  bingoLetterIndex={
+                    isWinningTile
+                      ? bingoLetterIndexes[winningTiles.indexOf(tileNumber)]
+                      : undefined
+                  }
+                  animationDelay={
+                    isWinningTile
+                      ? animationDelayIncrements[
+                          winningTiles.indexOf(tileNumber)
+                        ]
+                      : undefined
+                  }
+                />
+              );
+            })}
         </div>
 
         <ol className="list-inside list-decimal text-white cursor-pointer lg:hidden">
           {board &&
-            board.map((text, index) => (
-              <li
-                key={`bottom-${index}`}
-                className={selected.includes(index + 1) ? "line-through" : ""}
-                onClick={() => handleTileClick(index + 1)}
-              >
-                {text}
-              </li>
-            ))}
+            board.map((text, index) => {
+              const tileNumber = index + 1;
+              return (
+                <li
+                  key={`bottom-${index}`}
+                  className={
+                    selected.includes(tileNumber) ? "line-through" : ""
+                  }
+                  onClick={() => handleTileClick(tileNumber)}
+                >
+                  {text}
+                </li>
+              );
+            })}
         </ol>
       </main>
     </div>
