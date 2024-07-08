@@ -1,7 +1,6 @@
-import React from "react";
-import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import Tile from "./Tile";
-import { render, screen, fireEvent } from "@testing-library/react";
 
 import { generateIndexOfWinningTiles, generateDelayTiming } from "./functions";
 import { initialWinningCombinations } from "./config";
@@ -32,41 +31,6 @@ describe("Bingo animation timing, 15 steps, starting from 0", () => {
   });
 });
 
-describe("Tiles get correct animation delay", () => {
-
-  // 
-
-  // it("should recieve the correct props", () => {
-  //   const handleClick = jest.fn();
-  //   const props = {
-  //     handleClick,
-  //     text: "Test Tile",
-  //     tileNumber: 1,
-  //     selected: true,
-  //     winningTile: false,
-  //     winningTileIndex: 0,
-  //     animationDelay: 0.5,
-  //   };
-
-  //   render(<Tile {...props} />);
-  //   const tile = screen.getByTestId(`tile-${props.tileNumber}`);
-
-  //   // Check text content
-  //   expect(tile).toHaveTextContent(props.text);
-
-  //   // Check class based on selected prop
-  //   expect(tile).toHaveClass("selected");
-  //   expect(tile).not.toHaveClass("winning");
-
-  //   // Check inline style
-  //   expect(tile).toHaveStyle(`animation-delay: ${props.animationDelay}s`);
-
-  //   // Simulate click and check if the handleClick function is called with correct tile number
-  //   fireEvent.click(tile);
-  //   expect(handleClick).toHaveBeenCalledWith(props.tileNumber);
-  // });
-});
-
 describe("Bingo letter is selected correctly", () => {
   test("index of 3", () => {
     const bingoLetterIndex =
@@ -84,5 +48,54 @@ describe("Bingo letter is selected correctly", () => {
     const bingoLetterIndex =
       bingoLetterIndexes[winningCombosFlattened.indexOf(14)];
     expect(bingoLetterIndex).toEqual(3);
+  });
+});
+
+describe("Tile Component", () => {
+  const defaultProps = {
+    text: "Test Phrase",
+    tileNumber: 1,
+    handleClick: jest.fn(),
+    selected: false,
+    animationDelay: undefined,
+    isWinningTile: false,
+    bingoLetterIndex: undefined,
+  };
+
+  it("renders the Tile component with correct props when not selected", () => {
+    render(<Tile {...defaultProps} />);
+    expect(screen.getByText("Test Phrase")).toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.queryByText("B")).not.toBeInTheDocument(); // Check that BINGO letter is not present
+  });
+
+  it("renders the Tile component with correct props when selected", () => {
+    render(<Tile {...defaultProps} selected />);
+    expect(screen.queryByText("Test Phrase")).not.toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.queryByText("B")).not.toBeInTheDocument(); // Check that BINGO letter is not present
+  });
+
+  it("renders the Tile component with correct props when selected and is a winning tile", () => {
+    const winningProps = {
+      ...defaultProps,
+      selected: true,
+      isWinningTile: true,
+      animationDelay: 1,
+      bingoLetterIndex: 0, // Assuming 'B' is the first letter
+    };
+    render(<Tile {...winningProps} />);
+    expect(screen.queryByText("Test Phrase")).not.toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("B")).toBeInTheDocument(); // Check that BINGO letter is present
+  });
+
+  it("handles click events correctly", () => {
+    const handleClick = jest.fn();
+    render(<Tile {...defaultProps} handleClick={handleClick} />);
+
+    fireEvent.click(screen.getByText("1"));
+
+    expect(handleClick).toHaveBeenCalledWith(1);
   });
 });

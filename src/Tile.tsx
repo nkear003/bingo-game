@@ -17,9 +17,6 @@ const Tile = ({
   isWinningTile,
   bingoLetterIndex,
 }: TileProps) => {
-  if (isWinningTile)
-    console.log(`$tileNumber: ${tileNumber} animationDelay: ${animationDelay}`);
-
   return (
     <div
       className={`transition-transform border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500  lg:hover:text-white lg:border-2 ${
@@ -39,7 +36,7 @@ const Tile = ({
         } absolute inset-0 w-full h-full transition-opacity transform-gpu`}
         alt="Bingo Stamp"
         style={{
-          animationDelay: `${animationDelay}s`,
+          animationDelay: animationDelay ? `${animationDelay}s` : "",
         }}
       />
 
@@ -56,18 +53,18 @@ const Tile = ({
       {!selected && <span className="hidden lg:block">{text}</span>}
 
       {/* Bingo letter */}
-      <div
-        // className={`absolute text-white text-xl font-bold opacity-0 transition-[opacity,transform]`}
-        className={`absolute text-white text-xl font-bold transition-[transform,opacity] opacity-0 ${
-          isWinningTile ? "reveal" : ""
-        }`}
-        style={{
-          animationDelay: `${animationDelay}s`,
-        }}
-        // onAnimationEnd={() => console.log(`animation for ${tileNumber} ended`)}
-      >
-        {bingoLetterIndex && "BINGO"[bingoLetterIndex]}
-      </div>
+      {isWinningTile && (
+        <div
+          className={`absolute text-white text-xl font-bold opacity-0 ${
+            isWinningTile ? "reveal" : ""
+          }`}
+          style={{
+            animationDelay: animationDelay ? `${animationDelay}s` : "",
+          }}
+        >
+          {bingoLetterIndex !== undefined && "BINGO"[bingoLetterIndex]}
+        </div>
+      )}
     </div>
   );
 };
