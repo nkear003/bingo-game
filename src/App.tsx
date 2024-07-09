@@ -78,7 +78,7 @@ function App() {
           setWinningTiles([]);
 
           // Wait just long enough for classes to reset
-          await new Promise((resolve) => setTimeout(resolve, 0));
+          await new Promise((resolve) => setTimeout(resolve, 1));
         }
 
         // Reset after all animations are done
