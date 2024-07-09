@@ -50,7 +50,7 @@ const Tile = ({
       </span>
 
       {/* Text */}
-      {!isSelected && <span className="hidden lg:block">{text}</span>}
+      {!isSelected && <p className="hidden lg:block">{text}</p>}
 
       {/* Bingo letter */}
       {isWinningTile && (
