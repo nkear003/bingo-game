@@ -19,26 +19,28 @@ const Tile = ({
 }: TileProps) => {
   return (
     <div
-      className={`transition-transform border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500  lg:hover:text-white lg:border-2 ${
-        isSelected ? "" : "lg:hover:scale-105 hover:z-10"
+      className={`transition-transform border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4  lg:hover:text-white lg:border-2 ${
+        isSelected ? "" : "lg:hover:scale-105 lg:hover:bg-secondary hover:z-10"
       } ${isSelected ? "" : "cursor-pointer"}
         
       `}
       onClick={() => handleClick(tileNumber)}
     >
       {/* Stamp */}
-      <img
-        src="/stamp.svg"
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
         className={`${isSelected ? "opacity-100" : "opacity-0"} ${
           isWinningTile ? "spin " : ""
         } ${
           isWinningTile ? "will-change-transform" : ""
-        } absolute inset-0 w-full h-full transition-opacity transform-gpu`}
-        alt="Bingo Stamp"
+        } absolute inset-0 w-full h-full transition-opacity transform-gpu fill-secondary`}
         style={{
           animationDelay: animationDelay ? `${animationDelay}s` : "",
         }}
-      />
+      >
+        <circle cx="10" cy="10" r="9" stroke="none" stroke-width=".5" />
+      </svg>
 
       {/* Tile number */}
       <span

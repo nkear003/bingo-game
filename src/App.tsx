@@ -93,12 +93,12 @@ function App() {
   }, [isBingo, winningTileSets]);
 
   return (
-    <div className="bg-slate-500 min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
+    <div className="bg-primary min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
       <main className="flex flex-col items-center w-full max-w-sm lg:max-w-5xl">
-        <h1 className="text-xl font-bold text-white mb-2 lg:text-3xl lg:mb-6">
+        <h1 className="text-2xl font-bold text-white lg:text-3xl mb-2 lg:mb-6">
           {gameTitle}
         </h1>
-        <div className="grid grid-cols-5 grid-rows-5 lg:max-h-[85vh] lg:max-w-[85vh] bg-white border-[1px] border-black mb-4 w-full lg:border-2">
+        <div className="grid grid-cols-5 grid-rows-5 lg:max-h-[80vh] lg:max-w-[80vh] bg-white border-[1px] border-black mb-2 lg:mb-4 w-full lg:border-2">
           {board &&
             board.map((text, index) => {
               const tileNumber = index + 1;
@@ -125,7 +125,7 @@ function App() {
             })}
         </div>
 
-        <p className="text-lg font-bold text-white mb-2 lg:text-2xl lg:mb-6">
+        <p className="text-lg font-bold text-white mb-4 lg:text-2xl lg:mb-6">
           Bingo Count: {bingoCount}
         </p>
 
