@@ -97,7 +97,7 @@ function App() {
         <p className="text-xl font-bold text-white mb-2 lg:text-4xl lg:mb-6">
           Bingo Count: {bingoCount}
         </p>
-        <div className="grid grid-cols-5 grid-rows-5 bg-white border-[1px] border-black mb-4 w-full lg:border-2">
+        <div className="grid grid-cols-5 grid-rows-5 lg:max-h-[85vh] lg:max-w-[85vh] bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board &&
             board.map((text, index) => {
               const tileNumber = index + 1;
