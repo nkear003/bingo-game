@@ -31,10 +31,6 @@
   animation: reveal 1s ease-in-out forwards;
 }
 
-/* .opacity-reveal {
-  opacity: 1;
-} */
-
 .spin {
   animation: spin 0.5s ease-in-out forwards;
 }
