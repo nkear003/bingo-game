@@ -12,7 +12,7 @@ import {
 
 // GAME SETUP
 // Calculate delays
-const animationSetDuration = 6 * animationConfig.animationTimingBaseInSec; // 5 tiles + 1 for tail
+const animationSetDuration = 7 * animationConfig.animationTimingBaseInSec; // 5 tiles + 1 for tail
 // Setup phrases randomly on board
 const animationSetDurationMs = animationSetDuration * 1000;
 const shufflePhrases = shuffleArray([...phrases]);
