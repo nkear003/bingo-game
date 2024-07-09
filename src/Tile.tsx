@@ -5,7 +5,6 @@ type TileProps = {
   isSelected: boolean;
   animationDelay: number | undefined;
   isWinningTile: boolean;
-  isBingo: boolean;
   bingoLetterIndex: number | undefined;
 };
 
@@ -17,7 +16,6 @@ const Tile = ({
   animationDelay,
   isWinningTile,
   bingoLetterIndex,
-  isBingo,
 }: TileProps) => {
   return (
     <div

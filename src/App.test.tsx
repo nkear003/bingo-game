@@ -10,7 +10,6 @@ describe("Tile Component", () => {
     animationDelay: undefined,
     isWinningTile: false,
     bingoLetterIndex: undefined,
-    isBingo: false,
   };
 
   it("renders the Tile component with correct props when not selected", () => {

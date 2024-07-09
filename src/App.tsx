@@ -107,7 +107,6 @@ function App() {
                   handleClick={handleTileClick}
                   key={index}
                   text={text}
-                  isBingo={isBingo}
                   tileNumber={tileNumber}
                   isSelected={selectedTiles.includes(tileNumber)}
                   isWinningTile={isWinningTile}
