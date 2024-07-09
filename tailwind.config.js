@@ -8,12 +8,6 @@ module.exports = {
         secondary: "#E1341E",
         "text-contrast": "#0A1819",
       },
-      // Red / blue
-      // colors: {
-      //   primary: "#49AAB6",
-      //   secondary: "#E1341E",
-      //   "text-contrast": "#0A1819",
-      // },
     },
     screens: { lg: { raw: "((min-width: 1024px) and (min-height: 900px))" } },
   },
