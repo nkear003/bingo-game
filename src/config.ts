@@ -44,6 +44,7 @@ export const phrases = [
   "Tourists getting yelled at for being in the bike path",
 ];
 export const freeWord = "FREE";
+export const gameTitle = "Berlin Summer";
 
 export const animationConfig = {
   animationTimingBaseInSec: 0.25,

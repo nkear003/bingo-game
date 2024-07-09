@@ -7,6 +7,7 @@ import {
   freeWord,
   phrases,
   animationConfig,
+  gameTitle,
 } from "./config";
 
 // GAME SETUP
@@ -94,9 +95,9 @@ function App() {
   return (
     <div className="bg-slate-500 min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
       <main className="flex flex-col items-center w-full max-w-sm lg:max-w-5xl">
-        <p className="text-xl font-bold text-white mb-2 lg:text-4xl lg:mb-6">
-          Bingo Count: {bingoCount}
-        </p>
+        <h1 className="text-xl font-bold text-white mb-2 lg:text-3xl lg:mb-6">
+          {gameTitle}
+        </h1>
         <div className="grid grid-cols-5 grid-rows-5 lg:max-h-[85vh] lg:max-w-[85vh] bg-white border-[1px] border-black mb-4 w-full lg:border-2">
           {board &&
             board.map((text, index) => {
@@ -123,6 +124,10 @@ function App() {
               );
             })}
         </div>
+
+        <p className="text-lg font-bold text-white mb-2 lg:text-2xl lg:mb-6">
+          Bingo Count: {bingoCount}
+        </p>
 
         <ol className="list-inside list-decimal text-white cursor-pointer lg:hidden">
           {board &&
