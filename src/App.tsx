@@ -8,27 +8,23 @@ import {
   phrases,
   animationConfig,
 } from "./config";
-import { generateDelayTiming, generateIndexOfWinningTiles } from "./functions";
 
 // GAME SETUP
-// Setup delay increments
-const animationDelayIncrements = generateDelayTiming(
-  phrases.length + 1, // One word is the free word
-  animationConfig.animationTimingBaseInSec,
-  true
-);
+// Calculate delays
+const animationSetDuration = 6 * animationConfig.animationTimingBaseInSec; // 5 tiles + 1 for tail
 // Setup phrases randomly on board
+const animationSetDurationMs = animationSetDuration * 1000;
 const shufflePhrases = shuffleArray([...phrases]);
 // Add the free tile to the set
 shufflePhrases.splice(12, 0, freeWord);
 // Setup the board
 const board = shufflePhrases;
-const bingoLetterIndexes = generateIndexOfWinningTiles();
 
 function App() {
-  const [selected, setSelected] = useState<number[]>([13]);
+  const [selectedTiles, setSelectedTiles] = useState<number[]>([13]);
   const [isBingo, setIsBingo] = useState(false);
   const [winningTiles, setWinningTiles] = useState<number[]>([]);
+  const [winningTileSets, setWinningTileSets] = useState<number[][]>([]);
   const [bingoCount, setBingoCount] = useState(0);
   const [winningCombinations, setWinningCombinations] = useState(
     initialWinningCombinations
@@ -36,9 +32,9 @@ function App() {
 
   const handleTileClick = (index: number) => {
     // Don't allow clicks during animation or if we have already selected the tile
-    if (isBingo || selected.includes(index)) return;
-    const newSelected = [...selected, index];
-    setSelected(newSelected);
+    if (isBingo || selectedTiles.includes(index)) return;
+    const newSelected = [...selectedTiles, index];
+    setSelectedTiles(newSelected);
     checkBingo(newSelected);
   };
 
@@ -56,9 +52,8 @@ function App() {
       );
       setWinningCombinations(updatedWinningCombinations);
 
-      // Create a flat index of all selected tiles which are a part of a winning set
-      const bingosFlattened = newBingos.flat();
-      setWinningTiles(bingosFlattened);
+      // Set the winning tile sets to state
+      setWinningTileSets(newBingos);
 
       // Update bingo count and set bingo/winning state
       setBingoCount((prevCount) => prevCount + newBingos.length);
@@ -68,22 +63,33 @@ function App() {
 
   useEffect(() => {
     if (isBingo) {
-      // Calculate total animation timing
-      const animationTotalDuration =
-        (winningTiles.length + 1) * animationConfig.animationTimingBaseInSec;
-      const animationTimingBingoTotalMs = animationTotalDuration * 1000;
+      const animateWinningTileSets = async () => {
+        for (let i = 0; i < winningTileSets.length; i++) {
+          const winningTileSet = winningTileSets[i];
 
-      // Timer for resetting after animation has run
-      const bingoTimer = setTimeout(() => {
+          setWinningTiles(winningTileSet);
+
+          // Wait for the animation to complete
+          await new Promise((resolve) =>
+            setTimeout(resolve, animationSetDurationMs)
+          );
+
+          // Clear winning tiles to reset animation
+          setWinningTiles([]);
+
+          // Wait just long enough for classes to reset
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+
+        // Reset after all animations are done
         setIsBingo(false);
         setWinningTiles([]);
-      }, animationTimingBingoTotalMs);
-
-      return () => {
-        clearTimeout(bingoTimer);
+        setWinningTileSets([]);
       };
+
+      animateWinningTileSets();
     }
-  }, [isBingo, winningTiles]);
+  }, [isBingo, winningTileSets]);
 
   return (
     <div className="bg-slate-500 min-h-svh flex justify-center p-4 lg:p-8 lg:items-center">
@@ -101,19 +107,17 @@ function App() {
                   handleClick={handleTileClick}
                   key={index}
                   text={text}
+                  isBingo={isBingo}
                   tileNumber={tileNumber}
-                  selected={selected.includes(tileNumber)}
+                  isSelected={selectedTiles.includes(tileNumber)}
                   isWinningTile={isWinningTile}
                   bingoLetterIndex={
-                    isWinningTile
-                      ? bingoLetterIndexes[winningTiles.indexOf(tileNumber)]
-                      : undefined
+                    isWinningTile ? winningTiles.indexOf(tileNumber) : undefined
                   }
                   animationDelay={
                     isWinningTile
-                      ? animationDelayIncrements[
-                          winningTiles.indexOf(tileNumber)
-                        ]
+                      ? animationConfig.animationTimingBaseInSec *
+                        winningTiles.indexOf(tileNumber)
                       : undefined
                   }
                 />
@@ -129,7 +133,7 @@ function App() {
                 <li
                   key={`bottom-${index}`}
                   className={
-                    selected.includes(tileNumber) ? "line-through" : ""
+                    selectedTiles.includes(tileNumber) ? "line-through" : ""
                   }
                   onClick={() => handleTileClick(tileNumber)}
                 >

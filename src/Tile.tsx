@@ -2,9 +2,10 @@ type TileProps = {
   text: string;
   tileNumber: number;
   handleClick: (tileNumber: number) => void;
-  selected: boolean;
+  isSelected: boolean;
   animationDelay: number | undefined;
   isWinningTile: boolean;
+  isBingo: boolean;
   bingoLetterIndex: number | undefined;
 };
 
@@ -12,16 +13,17 @@ const Tile = ({
   text,
   tileNumber,
   handleClick,
-  selected,
+  isSelected,
   animationDelay,
   isWinningTile,
   bingoLetterIndex,
+  isBingo,
 }: TileProps) => {
   return (
     <div
       className={`transition-transform border-[1px] border-black flex flex-col justify-center items-center aspect-square border-box relative p-4 lg:hover:bg-slate-500  lg:hover:text-white lg:border-2 ${
-        selected ? "" : "lg:hover:scale-105 hover:z-10"
-      } ${selected ? "" : "cursor-pointer"}
+        isSelected ? "" : "lg:hover:scale-105 hover:z-10"
+      } ${isSelected ? "" : "cursor-pointer"}
         
       `}
       onClick={() => handleClick(tileNumber)}
@@ -29,7 +31,7 @@ const Tile = ({
       {/* Stamp */}
       <img
         src="/stamp.svg"
-        className={`${selected ? "opacity-100" : "opacity-0"} ${
+        className={`${isSelected ? "opacity-100" : "opacity-0"} ${
           isWinningTile ? "spin " : ""
         } ${
           isWinningTile ? "will-change-transform" : ""
@@ -43,14 +45,14 @@ const Tile = ({
       {/* Tile number */}
       <span
         className={`font-bold z-10 lg:absolute lg:top-2 lg:left-2 ${
-          selected ? "text-white lg:text-black" : "text-black"
+          isSelected ? "text-white lg:text-black" : "text-black"
         } ${isWinningTile ? "opacity-0 lg:opacity-100" : ""}`}
       >
         {tileNumber}
       </span>
 
       {/* Text */}
-      {!selected && <span className="hidden lg:block">{text}</span>}
+      {!isSelected && <span className="hidden lg:block">{text}</span>}
 
       {/* Bingo letter */}
       {isWinningTile && (
